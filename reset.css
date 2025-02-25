@@ -1,0 +1,58 @@
+/* Reset CSS */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    font-size: 16px;
+    line-height: 1.5;
+    font-family: Arial, sans-serif;
+    color: #333;
+    background-color: #fff;
+}
+
+/* 리스트 스타일 제거 */
+ul, ol {
+    list-style: none;
+}
+
+/* 링크 스타일 초기화 */
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+/* 폼 요소 기본 스타일 제거 */
+input, button, textarea, select {
+    font: inherit;
+    border: none;
+    background: none;
+    outline: none;
+}
+
+/* 버튼 기본 스타일 제거 */
+button {
+    cursor: pointer;
+}
+
+/* 이미지 크기 조절 및 기본 여백 제거 */
+img {
+    max-width: 100%;
+    height: auto;
+    vertical-align: middle;
+}
+
+/* 테이블 스타일 초기화 */
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* strong 태그 기본 굵기 유지 */
+strong {
+    font-weight: bold;
+}
