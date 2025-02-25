@@ -1,0 +1,92 @@
+/* 전체 페이지 스타일 */
+body {
+    background-color: #7A0000; /* 섯다 느낌의 강렬한 붉은색 */
+    color: #fff;
+    font-family: 'Noto Sans KR', sans-serif;
+    text-align: center;
+    padding: 20px;
+}
+
+/* 제목 스타일 */
+h1 {
+    font-size: 45px;
+    font-weight: bold;
+    margin-bottom: 15px;
+    color: #FFD700; /* 골드 */
+    text-shadow: 3px 3px 10px rgba(255, 215, 0, 0.9);
+}
+
+/* 버튼 공통 스타일 */
+button {
+    font-size: 22px;
+    font-weight: bold;
+    margin: 10px;
+    padding: 12px 24px;
+    border: 3px solid #FFD700; /* 금색 테두리 */
+    border-radius: 10px;
+    background: linear-gradient(145deg, #3A0000, #910000); /* 붉은색 그라디언트 */
+    color: #fff;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+}
+
+/* 버튼 hover 효과 */
+button:hover {
+    background: #FFD700; /* 골드 */
+    color: #7A0000; /* 한게임 붉은색 */
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
+}
+
+/* 선택된 버튼 강조 */
+button.selected {
+    background: #FFD700; /* 골드 */
+    color: #7A0000;
+    font-weight: bold;
+    box-shadow: 0 0 25px rgba(255, 215, 0, 1);
+}
+
+/* 난이도 & AI 수 선택된 값 스타일 */
+p {
+    font-size: 22px;
+    font-weight: bold;
+    padding: 8px 15px;
+    display: inline-block;
+    background: rgba(255, 215, 0, 0.3);
+    border-radius: 8px;
+    margin-top: 10px;
+}
+
+/* 버튼 그룹 배치 (Flexbox) */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    flex-wrap: wrap;
+    margin-top: 15px;
+}
+
+/* 게임 시작 버튼 - 화면 하단 고정 */
+.start-button {
+    font-size: 24px;
+    padding: 18px 36px;
+    background: linear-gradient(145deg, #FFD700, #D4A100); /* 금색 버튼 */
+    color: #7A0000; /* 한게임 붉은색 */
+    border: 3px solid #FFD700;
+    font-weight: bold;
+
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 220px;
+    text-align: center;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);
+}
+
+.start-button:hover {
+    background: #7A0000; /* 붉은색 */
+    color: #FFD700; /* 금색 */
+    box-shadow: 0 0 25px rgba(255, 215, 0, 1);
+}
