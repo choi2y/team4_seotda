@@ -121,7 +121,7 @@ async function loadDatabase(event) {
 }
 
 // 로그인 폼 제출 이벤트 핸들러
-document.getElementById("loginForm").addEventListener("submit", function(event) {
+document.getElementById("login-form").addEventListener("submit", function(event) {
     event.preventDefault();
 
     const user_id = document.getElementById("user_id").value;
@@ -140,12 +140,13 @@ document.getElementById("loginForm").addEventListener("submit", function(event) 
 
         // 1초 후 메인 페이지로 이동
         setTimeout(() => {
-            window.location.href = "next========.html";
+            window.location.href = "select_mode.html";
         }, 1000);
     } else {
         document.getElementById("loginResult").innerText =
             "아이디 또는 비밀번호가 일치하지 않습니다.";
     }
+    stmt.free();
 });
 const dbLoadBtn = document.getElementById('loadDB')
 dbLoadBtn.addEventListener('change', loadDatabase)
