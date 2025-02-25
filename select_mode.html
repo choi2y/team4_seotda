@@ -12,6 +12,30 @@
             crossorigin="anonymous"></script>
 </head>
 <body>
+    <h1>게임 설정</h1>
 
+    <!-- 난이도 선택 -->
+    <label>게임 난이도:</label>
+    <button onclick="selectDifficulty('easy')">초급</button>
+    <button onclick="selectDifficulty('medium')">중급</button>
+
+    <p id="selected-difficulty">선택된 난이도: 없음</p>
+
+    <!-- AI 수 선택 -->
+    <label>AI 플레이어 수:</label>
+    <button onclick="selectAiCount(3)">3명</button>
+    <button onclick="selectAiCount(4)">4명</button>
+    <button onclick="selectAiCount(5)">5명</button>
+    <button onclick="selectAiCount(6)">6명</button>
+    <button onclick="selectAiCount(7)">7명</button>
+    <button onclick="selectAiCount(8)">8명</button>
+
+    <p id="selected-ai">선택된 AI 수: 없음</p>
+
+    <!-- 게임 시작 버튼 -->
+    <button onclick="startGame()">게임 시작</button>
+
+
+    <script src="select_mode.js"></script>
 </body>
 </html>
