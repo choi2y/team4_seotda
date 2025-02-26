@@ -25,30 +25,38 @@
 <div class="game-container">
 
     <!-- 상대 플레이어 카드 -->
-    <div class="opponents">
-        <div class="player">
-            <p>플레이어 1</p>
-            <img src="img/0.jpg" class="card back">
-            <img src="img/0.jpg" class="card back">
+    <div class="allOpponents">
+        <div class="opponent">
+            <div class="player">
+                <p>플레이어 1</p>
+                <img class="card back" id="ai-card-1-1" src="img/0.jpg">
+                <img class="card back" id="ai-card-1-2" src="img/0.jpg">
+                <p class="bettingResult" id="ai-bet-1">대기 중...</p>
+            </div>
+            <div class="player">
+                <p>플레이어 3</p>
+                <img class="card back" id="ai-card-3-1" src="img/0.jpg">
+                <img class="card back" id="ai-card-3-2" src="img/0.jpg">
+                <p class="bettingResult" id="ai-bet-3">대기 중...</p>
+            </div>
         </div>
-        <div class="player">
-            <p>플레이어 2</p>
-            <img src="img/0.jpg" class="card back">
-            <img src="img/0.jpg" class="card back">
-        </div>
-        <div class="player">
-            <p>플레이어 3</p>
-            <img src="img/0.jpg" class="card back">
-            <img src="img/0.jpg" class="card back">
+        <div class="opponent">
+            <div class="player">
+                <p class="bettingResult" id="ai-bet-2">대기 중...</p>
+                <img class="card back" id="ai-card-2-1" src="img/0.jpg">
+                <img class="card back" id="ai-card-2-2" src="img/0.jpg">
+                <p>플레이어 2</p>
+            </div>
         </div>
     </div>
 
     <!-- 내 카드 -->
     <div class="my-area">
-        <p>내 카드</p>
         <div class="my-cards">
-            <img src="img/1.jpg" class="card" id="my-card-1">
-            <img src="img/2.jpg" class="card" id="my-card-2">
+            <p>내 카드</p>
+            <img class="card" id="my-card-1" src="img/0.jpg">
+            <img class="card" id="my-card-2" src="img/0.jpg">
+            <p class="bettingResult" id="player-bet">대기 중...</p>
         </div>
     </div>
 
