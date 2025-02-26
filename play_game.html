@@ -10,8 +10,64 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="play_game.css">
 </head>
 <body>
+<body>
 
+<nav class="navbar">
+    <h1>섯다 게임</h1>
+    <ul>
+        <li><a href="#">게임 시작</a></li>
+        <li><a href="#">규칙</a></li>
+        <li><a href="#">설정</a></li>
+    </ul>
+</nav>
+
+<div class="game-container">
+
+    <!-- 상대 플레이어 카드 -->
+    <div class="opponents">
+        <div class="player">
+            <p>플레이어 1</p>
+            <img src="img/0.jpg" class="card back">
+            <img src="img/0.jpg" class="card back">
+        </div>
+        <div class="player">
+            <p>플레이어 2</p>
+            <img src="img/0.jpg" class="card back">
+            <img src="img/0.jpg" class="card back">
+        </div>
+        <div class="player">
+            <p>플레이어 3</p>
+            <img src="img/0.jpg" class="card back">
+            <img src="img/0.jpg" class="card back">
+        </div>
+    </div>
+
+    <!-- 내 카드 -->
+    <div class="my-area">
+        <p>내 카드</p>
+        <div class="my-cards">
+            <img src="img/1.jpg" class="card" id="my-card-1">
+            <img src="img/2.jpg" class="card" id="my-card-2">
+        </div>
+    </div>
+
+    <!-- 배팅 영역 -->
+    <div class="betting-area">
+        <button onclick="playerBet('다이')">다이</button>
+        <button onclick="playerBet('따당')">따당</button>
+        <button onclick="playerBet('콜')">콜</button>
+        <button onclick="playerBet('쿼터')">쿼터</button>
+        <button onclick="playerBet('하프')">하프</button>
+        <button onclick="playerBet('올인')">올인</button>
+    </div>
+
+</div>
+
+</body>
+
+<script src="play_game.js"></script>
 </body>
 </html>
