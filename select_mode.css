@@ -31,6 +31,8 @@ h1 {
     display: flex;
     align-items: center; /* 가운데 정렬 */
     gap: 50px ;
+    border: 5px solid #ffffff;
+    width: 600px;
 }
 
 /* 버튼 공통 스타일 */
@@ -112,3 +114,4 @@ span {
     color: #FFD700; /* 금색 */
     box-shadow: 0 0 25px rgba(255, 215, 0, 1);
 }
+
