@@ -15,16 +15,21 @@
 <h1>게임 모드 설정</h1>
 
 <!-- 난이도 선택 -->
-<label>게임 난이도:</label>
-<div class="button-container">
+<div class="container">
+<label>게임 난이도</label>
+    <span id="selected-difficulty">없음</span>
+</div>
+    <div class="button-container">
     <button onclick="selectDifficulty('easy')">easy</button>
     <button onclick="selectDifficulty('medium')">medium</button>
+
 </div>
-
-<p id="selected-difficulty">선택된 난이도: 없음</p>
-
 <!-- AI 수 선택 -->
-<label>AI 플레이어 수:</label>
+
+<div class="container">
+<label>플레이어 수</label>
+    <span id="selected-ai">없음</span>
+</div>
 <div class="button-container">
     <button onclick="selectAiCount(3)">3명</button>
     <button onclick="selectAiCount(4)">4명</button>
@@ -34,7 +39,7 @@
     <button onclick="selectAiCount(8)">8명</button>
 </div>
 
-<p id="selected-ai">선택된 AI 수: 없음</p>
+
 
 <!-- 게임 시작 버튼 -->
 <button onclick="startGame()">게임 시작</button>
