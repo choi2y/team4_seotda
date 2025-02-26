@@ -1,5 +1,5 @@
 // 로그인 폼 제출 이벤트 핸들러
-document.getElementById("login-form")?.addEventListener("submit", function(event) {
+document.getElementById("login-form").addEventListener("submit", function(event) {
     event.preventDefault();
 
     const user_id = document.getElementById("user_id").value;
