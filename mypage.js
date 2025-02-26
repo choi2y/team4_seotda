@@ -41,7 +41,6 @@ document.addEventListener("DOMContentLoaded", async function() {
         if (stmt.step()) {
             const user = stmt.getAsObject();
             console.log("조회된 사용자 데이터:", user);
-            document.getElementById("user_id").innerText = user.user_id;
             document.getElementById("username").innerText = user.username;
             document.getElementById("game_money").innerText = user.game_money;
             document.getElementById("win_count").innerText = user.win_count;
@@ -50,6 +49,10 @@ document.addEventListener("DOMContentLoaded", async function() {
             console.log("해당 user_id로 조회된 데이터가 없습니다.");
         }
     }
+    // 게임시작 기능
+    window.start = function() {
+        window.location.href = "select_mode.html";
+    };
 
 // 로그아웃 기능
     function logout() {
