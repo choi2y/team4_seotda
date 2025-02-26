@@ -29,7 +29,6 @@ body {
     align-items: center; /* 내부 요소 가운데 정렬 */
     padding: 20px;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
     width: 100vh;
     height: 70vh;
     background-color: white;
