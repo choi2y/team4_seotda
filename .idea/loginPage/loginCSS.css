@@ -3,11 +3,12 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 /* 전체 페이지 스타일 */
 body {
-
+    background-color: #7A0000;
     text-size-adjust: auto;
     display: flex;
     justify-content: center; /* 가로 중앙 정렬 */
@@ -32,6 +33,7 @@ body {
     width: 100vh;
     height: 70vh;
     background-color: white;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
 }
 
 /* 제목 스타일 */
