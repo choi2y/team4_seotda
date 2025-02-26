@@ -1,0 +1,111 @@
+body {
+    font-family: Arial, sans-serif;
+    text-align: center;
+    background-color: #f4f4f4;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+}
+
+h1 {
+    font-size: 2em;
+    margin-top: 20px;
+    margin-bottom: 20px;
+    z-index: 10;
+}
+
+.game-container {
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 70%;
+    height: 80%; /* 높이를 늘림 */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* 내부 요소를 위와 아래로 배치 */
+}
+
+.opponents {
+    display: flex;
+    flex-direction: row; /* 플레이어 카드들을 가로로 배치 */
+    justify-content: center; /* 중앙 정렬 */
+    gap: 20px; /* 카드 간격 조정 */
+    margin-bottom: 20px; /* 아래쪽 여백 추가 */
+}
+
+.my-area {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* 카드 간격 조정 */
+    margin-bottom: 100px; /* 버튼과 카드 간격 조정 */
+}
+
+.my-cards {
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* 카드 간격 조정 */
+}
+
+.card {
+    display: inline-block;
+    width: 60px; /* 내 카드 너비 */
+    height: 100px; /* 내 카드 높이 */
+    background: gray;
+    border-radius: 5px;
+    text-align: center;
+    line-height: 100px; /* 카드 높이에 맞게 조정 */
+    font-size: 1.5em; /* 글씨 크기 조정 */
+    color: white;
+}
+
+.opponents .card {
+    width: 60px; /* 플레이어 카드 너비 */
+    height: 100px; /* 플레이어 카드 높이 */
+    line-height: 100px; /* 카드 높이에 맞게 조정 */
+    font-size: 1.5em; /* 글씨 크기 조정 */
+}
+
+.betting-area {
+    position: absolute;
+    bottom: 20px; /* 버튼과 카드 간격 조정 */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    gap: 10px; /* 버튼 간격 조정 */
+}
+
+button {
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+@media (max-width: 600px) {
+    .card {
+        width: 40px;
+        height: 60px;
+        line-height: 60px;
+        font-size: 1em;
+    }
+
+    button {
+        padding: 8px;
+        font-size: 0.9em;
+    }
+}
