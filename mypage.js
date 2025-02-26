@@ -15,7 +15,11 @@ document.addEventListener("DOMContentLoaded", async function() {
     const db = new SQL.Database(new Uint8Array(buffer));
 
     // 로그인 후 sessionStorage에 저장된 user_id 가져오기
-    const user_id = sessionStorage.getItem("user_id");
+    const storedUser = localStorage.getItem("loggedUser");
+
+    const user = JSON.parse(storedUser);
+    const user_id = user.user_id;
+    console.log("localStorage에서 가져온 user_id:", user_id);
 
 // 사용자 정보 및 기록을 불러오는 함수
     function loadUserProfile(user_id) {
@@ -49,7 +53,7 @@ document.addEventListener("DOMContentLoaded", async function() {
 
 // 로그아웃 기능
     function logout() {
-        sessionStorage.removeItem("user_id");
+        localStorage.removeItem("loggedUser");
         window.location.href = "login.html";
     }
     window.logout = logout;

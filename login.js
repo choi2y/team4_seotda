@@ -30,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async function() {
                 `로그인 성공! ${user.username} 님 환영합니다.`;
             // 로컬 스토리지에 로그인한 유저 정보를 저장 (메인 페이지에서 활용)
             localStorage.setItem("loggedUser", JSON.stringify(user));
+            sessionStorage.setItem("user_id", user.user_id);
 
             // 1초 후 메인 페이지로 이동
             setTimeout(() => {
