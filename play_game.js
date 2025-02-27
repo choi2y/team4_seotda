@@ -1,182 +1,124 @@
-const cards = [
-    {num: 1, name: '소나무', img: 'img/11.jpg'}, {num: 1, name: '광', img: 'img/1.jpg'},
-    {num: 2, name: '휘파람새', img: 'img/2.jpg'}, {num: 2, name: '매화꽃', img: 'img/12.jpg'},
-    {num: 3, name: '광', img: 'img/3.jpg'}, {num: 3, name: '벗꽃', img: 'img/13.jpg'},
-    {num: 4, name: '두견새', img: 'img/4.jpg'}, {num: 4, name: '등나무 꽃', img: 'img/14.jpg'},
-    {num: 5, name: '다리', img: 'img/5.jpg'}, {num: 5, name: '창포꽃', img: 'img/15.jpg'},
-    {num: 6, name: '나비', img: 'img/6.jpg'}, {num: 6, name: '모란', img: 'img/16.jpg'},
-    {num: 7, name: '멧돼지', img: 'img/7.jpg'}, {num: 7, name: '싸리 꽃', img: 'img/17.jpg'},
-    {num: 8, name: '광', img: 'img/8.jpg'}, {num: 8, name: '기러기', img: 'img/18.jpg'},
-    {num: 9, name: '술잔', img: 'img/9.jpg'}, {num: 9, name: '국화', img: 'img/19.jpg'},
-    {num: 10, name: '사슴', img: 'img/10.jpg'}, {num: 10, name: '단풍', img: 'img/20.jpg'}
-];
-//
+document.addEventListener("DOMContentLoaded", async function () {
+    try {
+        // SQL.js 초기화
+        const SQL = await initSqlJs({
+            locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.wasm`
+        });
 
-let playerCount = parseInt(localStorage.getItem("aiCount")) + 1 || 4; // 플레이어 포함
-let deck = [];
-let playerCards = [];
-let aiCards = [];
+        // 데이터베이스 로드
+        await loadDatabase(SQL);
 
-function initializeDeck() {
-    deck = [...cards];
-    deck.sort(() => Math.random() - 0.5); // 카드 섞기
-}
+        // 로그인된 사용자 확인
+        const storedUser = localStorage.getItem("loggedUser");
+        if (!storedUser) {
+            console.error("❌ 로그인된 사용자가 없습니다.");
+            alert("로그인이 필요합니다.");
+            window.location.href = "login.html";
+            return;
+        }
 
-function createAIUI() {
-    const opponentsContainer = document.querySelector(".allOpponents");
-    opponentsContainer.innerHTML = ""; // 기존 AI UI 초기화
+        const user = JSON.parse(storedUser);
+        console.log("🔹 로그인된 사용자 ID:", user.user_id);
 
-    for (let i = 1; i < playerCount; i++) {
-        const aiPlayer = document.createElement("div");
-        aiPlayer.classList.add("player");
-        aiPlayer.innerHTML = `
-            <p>플레이어 ${i}</p>
-            <img class="card back" id="ai-card-${i}-1" src="img/0.jpg">
-            <img class="card back" id="ai-card-${i}-2" src="img/0.jpg">
-            <p class="bettingResult" id="ai-bet-${i}">대기 중...</p>
-        `;
-        opponentsContainer.appendChild(aiPlayer);
+        // 데이터베이스가 초기화된 후 사용자 정보 로드
+        if (typeof db !== "undefined") {
+            console.log("✅ 데이터베이스 로드 완료. 사용자 정보 불러오기...");
+            loadUserProfile(user.user_id);
+        } else {
+            console.error("⚠️ 데이터베이스가 아직 초기화되지 않았습니다.");
+        }
+
+        // 버튼 기능 정의
+        window.start = function () {
+            window.location.href = "select_mode.html";
+        };
+
+        window.logout = function () {
+            localStorage.removeItem("loggedUser");
+            window.location.href = "login.html";
+        };
+    } catch (error) {
+        console.error("⚠️ 오류 발생:", error);
+    }
+});
+
+// 🎯 데이터베이스 로드 함수
+async function loadDatabase(SQL) {
+    try {
+        const savedDB = localStorage.getItem("savedDB");
+
+        if (savedDB) {
+            const response = await fetch(savedDB);
+            const buffer = await response.arrayBuffer();
+            db = new SQL.Database(new Uint8Array(buffer));
+            console.log("✅ 로컬스토리지에서 데이터베이스를 불러왔습니다.");
+        } else {
+            console.warn("⚠️ 저장된 데이터베이스가 없습니다. 새로 초기화합니다.");
+            db = new SQL.Database();
+
+            // users 및 user_record 테이블 생성
+            db.run(`
+                CREATE TABLE IF NOT EXISTS users (
+                    user_id TEXT PRIMARY KEY,
+                    username TEXT NOT NULL UNIQUE,
+                    password TEXT NOT NULL,
+                    game_money INTEGER NOT NULL DEFAULT 50000000
+                );
+                
+                CREATE TABLE IF NOT EXISTS user_record (
+                    user_id TEXT PRIMARY KEY,
+                    win_count INTEGER NOT NULL DEFAULT 0,
+                    lose_count INTEGER NOT NULL DEFAULT 0,
+                    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+                );
+            `);
+            console.log("✅ 새 데이터베이스가 생성되었습니다.");
+        }
+    } catch (error) {
+        console.error("❌ 데이터베이스 로드 중 오류 발생:", error);
     }
 }
 
-function dealCards() {
-    playerCards = [deck.pop(), deck.pop()];
-    aiCards = [];
-    for (let i = 1; i < playerCount; i++) {
-        aiCards.push([deck.pop(), deck.pop()]);
-    }
-}
+// 🎯 사용자 정보 불러오기
+function loadUserProfile(user_id) {
+    const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
+    if (storedUser) {
+        console.log("✅ 로컬스토리지에서 사용자 데이터 불러옴:", storedUser);
 
-function updateUI() {
-    document.getElementById("my-card-1").src = playerCards[0].img;
-    document.getElementById("my-card-2").src = playerCards[1].img;
-
-    for (let i = 1; i < playerCount; i++) {
-        document.getElementById(`ai-card-${i}-1`).src = "img/0.jpg"; // 기본 가려진 카드
-        document.getElementById(`ai-card-${i}-2`).src = "img/0.jpg";
-    }
-}
-
-function getJokbo(cards) {
-    let num1 = cards[0].num;
-    let num2 = cards[1].num;
-
-    // 광땡 판별
-    if ((num1 === 3 && num2 === 8) || (num1 === 1 && num2 === 8) || (num1 === 1 && num2 === 3)) {
-        return `${num1}${num2}광땡`;
-    }
-
-    // 숫자 땡 판별
-    if (num1 === num2) return `${num1}땡`;
-
-    // 기타 끗수 계산
-    let sum = (num1 + num2) % 10;
-    return sum === 0 ? "망통" : `${sum}끗`;
-}
-
-
-function determineWinner() {
-    let playerJokbo = getJokbo(playerCards);
-    let aiJokbos = aiCards.map(getJokbo);
-
-    let allHands = [{name: "플레이어", jokbo: playerJokbo}];
-    aiJokbos.forEach((jokbo, index) => {
-        allHands.push({name: `AI ${index + 1}`, jokbo});
-    });
-
-    // 족보 순서대로 정렬
-    let rankedHands = allHands.sort((a, b) => compareJokbo(b.jokbo, a.jokbo));
-
-    let topRankJokbo = rankedHands[0].jokbo; // 가장 높은 족보
-    let winners = rankedHands.filter(hand => hand.jokbo === topRankJokbo); // 같은 족보를 가진 플레이어들
-
-    if (winners.length > 1) {
-        document.getElementById("game-result").innerText = `🤝 무승부 (${topRankJokbo})`;
+        document.getElementById("username").innerText = storedUser.username;
+        document.getElementById("game_money").innerText = formatMoney(storedUser.game_money);
+        document.getElementById("win_count").innerText = storedUser.win_count || 0;
+        document.getElementById("lose_count").innerText = storedUser.lose_count || 0;
     } else {
-        document.getElementById("game-result").innerText = `🎉 승자: ${winners[0].name} (${topRankJokbo})`;
-    }
-
-    document.getElementById("game-result").style.display = "block";
-
-    // AI들의 패 공개
-    for (let i = 1; i < playerCount; i++) {
-        document.getElementById(`ai-card-${i}-1`).src = aiCards[i - 1][0].img;
-        document.getElementById(`ai-card-${i}-2`).src = aiCards[i - 1][1].img;
+        console.warn("⚠️ 로그인된 사용자 정보를 찾을 수 없음.");
     }
 }
 
-
-function compareJokbo(jokboA, jokboB) {
-    const order = [
-        "38광땡", "18광땡", "13광땡",  // 광땡 최우선
-        "장땡", "구땡", "팔땡", "칠땡", "육땡", "오땡", "사땡", "삼땡", "이땡", "삥땡",
-        "알리", "독사", "구삥", "장삥", "장사", "세륙",
-        "갑오", "9끗", "8끗", "7끗", "6끗", "5끗", "4끗", "3끗", "2끗", "1끗", "망통"
-    ];
-    return order.indexOf(jokboB) - order.indexOf(jokboA);
+// 🎯 게임머니 숫자 변환 함수
+function formatMoney(value) {
+    if (value >= 100000000) {
+        return (value / 100000000) + "억 원";
+    } else if (value >= 10000000) {
+        return (value / 10000000) + "천만 원";
+    } else if (value >= 1000000) {
+        return (value / 1000000) + "백만 원";
+    } else if (value >= 10000) {
+        return (value / 10000) + "만 원";
+    } else if (value >= 1000) {
+        return (value / 1000) + "천 원";
+    }
+    return value + " 원";
 }
 
-
-function playerBet(action) {
-    alert(`플레이어가 '${action}'을 선택했습니다.`);
-    aiTurn();
-}
-
-function aiTurn() {
-    setTimeout(() => {
-        alert("AI가 배팅을 진행합니다.");
-        determineWinner();
-    }, 1000);
-}
-
-function startGame() {
-    createAIUI(); // AI UI 생성
-    initializeDeck();
-    dealCards();
-    updateUI();
-}
-
-function restartGame() {
-    localStorage.clear();
-    location.reload();
-}
-
-function showRules() {
-    document.getElementById("rules-modal").style.display = "block";
-}
-
-function closeRules() {
-    document.getElementById("rules-modal").style.display = "none";
-}
-
-function showSettings() {
-    document.getElementById("settings-modal").style.display = "block";
-}
-
-function closeSettings() {
-    document.getElementById("settings-modal").style.display = "none";
-}
-
-document.addEventListener("DOMContentLoaded", startGame);
-
-
-// 로그아웃 기능
-function logout() {
-    localStorage.removeItem("loggedUser");
-    window.location.href = "login.html";
-}window.logout = logout;
-
-// 음악 설정 기능
+// 🎯 게임 설정 (음악 기능 포함)
 const music = document.getElementById("BGM001");
-const muteButton = document.getElementById("muteButton")
+const muteButton = document.getElementById("muteButton");
+
 music.volume = 50;
+
 function toggleMute() {
     music.muted = !music.muted;
-    if (music.muted) {
-        muteButton.innerText = "🔇";
-    } else {
-        muteButton.innerText = "🔊";
-    }
+    muteButton.innerText = music.muted ? "🔇" : "🔊";
 }
 
 function changeVolume(value) {
