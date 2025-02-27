@@ -116,7 +116,7 @@ function compareJokbo(jokboA, jokboB) {
     return order.indexOf(jokboB) - order.indexOf(jokboA);
 }
 
-// 베팅 로직
+
 function playerBet(action) {
     alert(`플레이어가 '${action}'을 선택했습니다.`);
     aiTurn();

@@ -160,14 +160,6 @@ p {
     margin-bottom: 20px;
 }
 
-.allOpponents {
-    display: flex;
-    justify-content: center;
-    gap: 50px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
-}
-
 .opponent {
     display: flex;
     flex-direction: column;
@@ -185,6 +177,7 @@ p {
     height: 120px;
     margin: 5px;
 }
+
 #game-result {
     position: absolute;
     top: 50%;
