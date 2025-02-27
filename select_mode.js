@@ -10,6 +10,7 @@ function selectDifficulty(difficulty, element) {
     document.querySelectorAll(".button-container button").forEach(btn => btn.classList.remove("selected"));
     element.classList.add("selected");
 }
+//
 
 // AI 플레이어 수 선택
 function selectAiCount(aiCount, element) {
