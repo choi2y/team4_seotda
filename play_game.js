@@ -10,6 +10,7 @@ const cards = [
     { num: 9, name: '술잔', img: 'img/9.jpg' }, { num: 9, name: '국화', img: 'img/19.jpg' },
     { num: 10, name: '사슴', img: 'img/10.jpg' }, { num: 10, name: '단풍', img: 'img/20.jpg' }
 ];
+//
 
 let playerCount = parseInt(localStorage.getItem("aiCount")) + 1 || 4; // 플레이어 포함
 let deck = [];
