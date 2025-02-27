@@ -10,6 +10,7 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="play_game.css">
 </head>
 <body>
 
@@ -23,6 +24,7 @@
 </nav>
 
 <div class="game-container">
+
 
     <!-- 상대 플레이어 카드 -->
     <div class="allOpponents">
@@ -48,10 +50,13 @@
                 <p>플레이어 2</p>
             </div>
         </div>
+
     </div>
 
     <!-- 내 카드 -->
     <div class="my-area">
+        <!-- 승패 결과를 표시할 영역 추가 -->
+        <p id="game-result"></p>
         <div class="my-cards">
             <p>내 카드</p>
             <img class="card" id="my-card-1" src="img/0.jpg">
