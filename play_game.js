@@ -59,19 +59,30 @@ function updateUI() {
 function getJokbo(cards) {
     let num1 = cards[0].num;
     let num2 = cards[1].num;
+    let name1 = cards[0].name;
+    let name2 = cards[1].name;
 
-    // 광땡 판별
-    if ((num1 === 3 && num2 === 8) || (num1 === 1 && num2 === 8) || (num1 === 1 && num2 === 3)) {
-        return `${num1}${num2}광땡`;
+    const isGwang1 = (num1 === 1 && name1 === '광');
+    const isGwang3 = (num1 === 3 && name1 === '광');
+    const isGwang8 = (num1 === 8 && name1 === '광');
+
+    const isGwang2 = (num2 === 1 && name2 === '광');
+    const isGwang4 = (num2 === 3 && name2 === '광');
+    const isGwang6 = (num2 === 8 && name2 === '광');
+
+    // 🔥 정확한 광땡 판별 (1광, 3광, 8광만 조합)
+    if ((isGwang1 && isGwang4) || (isGwang1 && isGwang6) || (isGwang3 && isGwang6)) {
+        return `광땡 (${num1}${num2})`;
     }
 
-    // 숫자 땡 판별
+    // 숫자 땡 판별 (예: 9땡, 7땡)
     if (num1 === num2) return `${num1}땡`;
 
-    // 기타 끗수 계산
+    // 끗수 계산
     let sum = (num1 + num2) % 10;
     return sum === 0 ? "망통" : `${sum}끗`;
 }
+
 
 
 function determineWinner() {
