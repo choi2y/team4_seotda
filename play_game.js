@@ -1,14 +1,14 @@
 const cards = [
-    { num: 1, name: '소나무', img: 'img/11.jpg' }, { num: 1, name: '광', img: 'img/1.jpg' },
-    { num: 2, name: '휘파람새', img: 'img/2.jpg' }, { num: 2, name: '매화꽃', img: 'img/12.jpg' },
-    { num: 3, name: '광', img: 'img/3.jpg' }, { num: 3, name: '벗꽃', img: 'img/13.jpg' },
-    { num: 4, name: '두견새', img: 'img/4.jpg' }, { num: 4, name: '등나무 꽃', img: 'img/14.jpg' },
-    { num: 5, name: '다리', img: 'img/5.jpg' }, { num: 5, name: '창포꽃', img: 'img/15.jpg' },
-    { num: 6, name: '나비', img: 'img/6.jpg' }, { num: 6, name: '모란', img: 'img/16.jpg' },
-    { num: 7, name: '멧돼지', img: 'img/7.jpg' }, { num: 7, name: '싸리 꽃', img: 'img/17.jpg' },
-    { num: 8, name: '광', img: 'img/8.jpg' }, { num: 8, name: '기러기', img: 'img/18.jpg' },
-    { num: 9, name: '술잔', img: 'img/9.jpg' }, { num: 9, name: '국화', img: 'img/19.jpg' },
-    { num: 10, name: '사슴', img: 'img/10.jpg' }, { num: 10, name: '단풍', img: 'img/20.jpg' }
+    {num: 1, name: '소나무', img: 'img/11.jpg'}, {num: 1, name: '광', img: 'img/1.jpg'},
+    {num: 2, name: '휘파람새', img: 'img/2.jpg'}, {num: 2, name: '매화꽃', img: 'img/12.jpg'},
+    {num: 3, name: '광', img: 'img/3.jpg'}, {num: 3, name: '벗꽃', img: 'img/13.jpg'},
+    {num: 4, name: '두견새', img: 'img/4.jpg'}, {num: 4, name: '등나무 꽃', img: 'img/14.jpg'},
+    {num: 5, name: '다리', img: 'img/5.jpg'}, {num: 5, name: '창포꽃', img: 'img/15.jpg'},
+    {num: 6, name: '나비', img: 'img/6.jpg'}, {num: 6, name: '모란', img: 'img/16.jpg'},
+    {num: 7, name: '멧돼지', img: 'img/7.jpg'}, {num: 7, name: '싸리 꽃', img: 'img/17.jpg'},
+    {num: 8, name: '광', img: 'img/8.jpg'}, {num: 8, name: '기러기', img: 'img/18.jpg'},
+    {num: 9, name: '술잔', img: 'img/9.jpg'}, {num: 9, name: '국화', img: 'img/19.jpg'},
+    {num: 10, name: '사슴', img: 'img/10.jpg'}, {num: 10, name: '단풍', img: 'img/20.jpg'}
 ];
 //
 
@@ -79,9 +79,9 @@ function determineWinner() {
     let playerJokbo = getJokbo(playerCards);
     let aiJokbos = aiCards.map(getJokbo);
 
-    let allHands = [{ name: "플레이어", jokbo: playerJokbo }];
+    let allHands = [{name: "플레이어", jokbo: playerJokbo}];
     aiJokbos.forEach((jokbo, index) => {
-        allHands.push({ name: `AI ${index + 1}`, jokbo });
+        allHands.push({name: `AI ${index + 1}`, jokbo});
     });
 
     // 족보 순서대로 정렬
@@ -116,8 +116,7 @@ function compareJokbo(jokboA, jokboB) {
     return order.indexOf(jokboB) - order.indexOf(jokboA);
 }
 
-
-
+// 베팅 로직
 function playerBet(action) {
     alert(`플레이어가 '${action}'을 선택했습니다.`);
     aiTurn();
@@ -150,4 +149,36 @@ function closeRules() {
     document.getElementById("rules-modal").style.display = "none";
 }
 
+function showSettings() {
+    document.getElementById("settings-modal").style.display = "block";
+}
+
+function closeSettings() {
+    document.getElementById("settings-modal").style.display = "none";
+}
+
 document.addEventListener("DOMContentLoaded", startGame);
+
+
+// 로그아웃 기능
+function logout() {
+    localStorage.removeItem("loggedUser");
+    window.location.href = "login.html";
+}window.logout = logout;
+
+// 음악 설정 기능
+const music = document.getElementById("BGM001");
+const muteButton = document.getElementById("muteButton")
+music.volume = 50;
+function toggleMute() {
+    music.muted = !music.muted;
+    if (music.muted) {
+        muteButton.innerText = "🔇";
+    } else {
+        muteButton.innerText = "🔊";
+    }
+}
+
+function changeVolume(value) {
+    music.volume = value;
+}
