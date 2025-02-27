@@ -2,7 +2,7 @@ let selectedDifficulty = null;
 let selectedAiCount = null;
 
 // 난이도 선택
-function selectDifficulty(difficulty, element, button) {
+function selectDifficulty(difficulty, element) {
     selectedDifficulty = difficulty;
     document.getElementById("selected-difficulty").innerText = "선택된 난이도: " + difficulty;
 
