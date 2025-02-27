@@ -1,0 +1,49 @@
+body {
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: #7A0000;
+    text-align: center;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+}
+
+h2 {
+    font-size: 2em;
+    margin-top: 50px;
+    margin-bottom: 5px;
+    color: #FFD700;
+    text-shadow: 3px 3px 10px rgba(255, 215, 0, 0.9);
+}
+
+.container {
+    position: relative;
+    display: flex;
+    align-items: center; /* 내부 요소 가운데 정렬 */
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100vh;
+    height: 65vh;
+    margin: 100px auto;
+    padding: 20px;
+    background-color: bisque;
+    box-shadow: 0 0 15px rgba(255, 215, 0, 0.5);
+    border-radius: 10px;
+}
+
+button {
+    width: 50%;
+    padding: 10px;
+    background-color: #FFD700;
+    color: black;
+    border: none;
+    cursor: pointer;
+    text-align: center;
+}
+
+a{
+    color: red;
+    font-size: 1.5em;
+}
