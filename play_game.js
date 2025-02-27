@@ -70,12 +70,12 @@ function initializePlayers() {
 function startGame() {
     initializeDeck();
     initializePlayers();
-    
+
     // 첫 번째 카드 분배
     for (let player of playerGameInfo) {
         player.cards.push(dealCards());
     }
-    
+
     // 배팅 진행
     console.log("첫 번째 배팅 진행...");
 
@@ -85,7 +85,7 @@ function startGame() {
             player.cards.push(dealCards());
         }
     }
-    
+
     // 족보 판별 및 결과 확인
     console.log("족보 판별 및 게임 결과 확인...");
 }
