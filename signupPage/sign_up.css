@@ -11,6 +11,7 @@
 }
 
 body {
+    font-family: 'ChosunGs', sans-serif; /* 입력 필드 폰트 적용 */
     background-image: url("../img/seotda_background.png");
     display: flex;
     flex-direction: column;
