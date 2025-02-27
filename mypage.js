@@ -21,6 +21,22 @@ document.addEventListener("DOMContentLoaded", async function() {
     const user_id = user.user_id;
     console.log("localStorage에서 가져온 user_id:", user_id);
 
+    // 숫자 변환 ( 5000000 -> 500 만 원 )
+    function formatMoney(value) {
+        if (value >= 100000000) {
+            return (value / 100000000) + "억 원";
+        } else if (value >= 10000000) {
+            return (value / 10000000) + "천만 원"; // 기존 방식 유지
+        } else if (value >= 1000000) {
+            return (value / 1000000) + "백만 원";
+        } else if (value >= 10000) {
+            return (value / 10000) + "만 원";
+        } else if (value >= 1000) {
+            return (value / 1000) + "천 원";
+        }
+        return value + " 원"; // 1000 미만일 경우 그대로 표시
+    }
+
 // 사용자 정보 및 기록을 불러오는 함수
     function loadUserProfile(user_id) {
         // users 테이블과 user_record 테이블을 LEFT JOIN 하여 승리, 패배 횟수를 포함
@@ -42,7 +58,7 @@ document.addEventListener("DOMContentLoaded", async function() {
             const user = stmt.getAsObject();
             console.log("조회된 사용자 데이터:", user);
             document.getElementById("username").innerText = user.username;
-            document.getElementById("game_money").innerText = user.game_money;
+            document.getElementById("game_money").innerText = formatMoney(user.game_money);
             document.getElementById("win_count").innerText = user.win_count;
             document.getElementById("lose_count").innerText = user.lose_count;
         }else {

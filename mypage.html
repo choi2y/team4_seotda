@@ -8,15 +8,36 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
 </head>
 <body>
-<h2>마이페이지</h2>
 <div class="container">
+  <div class="profile-card">
+    <div class="profile-card__img">
+      <img src="https://choi2y.github.io/img/smallfire.png" alt="profile card">
+    </div>
+    <div class="profile-card__cnt js-profile-cnt">
+      <div class ="profile-card__name">닉네임 :<span id="username"></span></div>
+      <!--  <p><strong>닉네임:</strong> <span id="username"></span></p>-->
 
-  <p><strong>닉네임:</strong> <span id="username"></span></p>
-  <p><strong>보유 포인트:</strong> <span id="game_money"></span></p>
-  <p><strong>승리 횟수:</strong> <span id="win_count"></span></p>
-  <p><strong>패배 횟수:</strong> <span id="lose_count"></span></p>
-  <button onclick="start()">게임시작</button>
-  <button onclick="logout()">로그아웃</button>
+      <div class="profile-card-inf">
+        <div class="profile-card-inf__item">
+          <div class="profile-card-inf__txt" id="game_money"></div>
+          <div class="profile-card-inf__title">보유 머니</div>
+        </div>
+
+        <div class="profile-card-inf__item">
+          <div class="profile-card-inf__txt" id="win_count"></div>
+          <div class="profile-card-inf__title">승리 횟수</div>
+        </div>
+
+        <div class="profile-card-inf__item">
+          <div class="profile-card-inf__txt" id="lose_count"></div>
+          <div class="profile-card-inf__title">패배 횟수</div>
+        </div>
+      </div>
+
+    </div>
+    <button onclick="start()">게임시작</button>
+    <button onclick="logout()">로그아웃</button>
+  </div>
 </div>
 <script src="mypage.js"></script>
 </body>
