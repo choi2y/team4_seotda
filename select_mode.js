@@ -2,7 +2,7 @@ let selectedDifficulty = null;
 let selectedAiCount = null;
 
 // 난이도 선택
-function selectDifficulty(difficulty, element) {
+function selectDifficulty(difficulty, element, button) {
     selectedDifficulty = difficulty;
     document.getElementById("selected-difficulty").innerText = "선택된 난이도: " + difficulty;
 
@@ -36,3 +36,7 @@ function startGame() {
     localStorage.setItem("aiCount", selectedAiCount);
     window.location.href = "play_game.html";
 }
+
+
+
+
