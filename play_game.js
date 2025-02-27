@@ -12,10 +12,14 @@ const cards = [
 ];
 //
 
-let playerCount = parseInt(localStorage.getItem("aiCount")) + 1 || 4; // 플레이어 포함
-let deck = [];
-let playerCards = [];
-let aiCards = [];
+    let playerCount = parseInt(localStorage.getItem("aiCount")) + 1 || 4; // 플레이어 포함
+    let deck = [];
+    let playerCards = [];
+    let aiCards = [];
+    let playerPoint = 1000; // 수정
+    let bettingPoint = 100; // 초기 배팅 금액
+    let totalBettingPoint = 0; // 총 배팅 금액
+    let playerBettingPoint = 0; // 플레이어가 배팅한 금액
 
 function initializeDeck() {
     deck = [...cards];
@@ -102,7 +106,13 @@ function determineWinner() {
     for (let i = 1; i < playerCount; i++) {
         document.getElementById(`ai-card-${i}-1`).src = aiCards[i - 1][0].img;
         document.getElementById(`ai-card-${i}-2`).src = aiCards[i - 1][1].img;
+        betting(aiBettingType(), true);
     }
+}
+// ai 배팅 타입 설정
+function aiBettingType() {
+    const bettingOptions = ["다이", "콜", "따당", "올인"];
+    return bettingType = bettingOptions[Math.floor(Math.random() * bettingOptions.length)];
 }
 
 
@@ -116,10 +126,31 @@ function compareJokbo(jokboA, jokboB) {
     return order.indexOf(jokboB) - order.indexOf(jokboA);
 }
 
+// 배팅
+function betting(action, isAI = false) {
+    switch (action) {
+        case "다이":
+            return alert(`${action} 선택 \n 배팅금 : 0, 배팅 금액: ${totalBettingPoint}`);
+        case "콜":
+            bettingPoint;
+            break;
+        case "따당":
+            bettingPoint = bettingPoint * 2;
+            break;
+        case "올인":
+            bettingPoint = isAI ? 1500 : playerPoint;
+            break;
+    }
+    if(isAI === false) { playerBettingPoint = bettingPoint}
+    totalBettingPoint = totalBettingPoint + bettingPoint;
+    alert(`${action} 선택 \n 배팅금 : ${bettingPoint}, 배팅 금액: ${totalBettingPoint}`);
+}
 
 
 function playerBet(action) {
     alert(`플레이어가 '${action}'을 선택했습니다.`);
+    betting(action);
+    playerPoint -= playerBettingPoint;
     aiTurn();
 }
 
