@@ -7,15 +7,15 @@
   <link rel="stylesheet" href="mypage.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
 </head>
-<body>
+<body onload="loadUserProfile(JSON.parse(localStorage.getItem('loggedUser')).user_id)">
+
 <h2>마이페이지</h2>
 <div class="container">
-
   <p><strong>닉네임:</strong> <span id="username"></span></p>
   <p><strong>보유 포인트:</strong> <span id="game_money"></span></p>
-  <p><strong>승리 횟수:</strong> <span id="win_count"></span></p>
-  <p><strong>패배 횟수:</strong> <span id="lose_count"></span></p>
-  <button onclick="start()">게임시작</button>
+  <p><strong>승리 횟수:</strong> <span id="win_count"></span> 회</p>
+  <p><strong>패배 횟수:</strong> <span id="lose_count"></span> 회</p>
+  <button onclick="start()">게임 시작</button>
   <button onclick="logout()">로그아웃</button>
 </div>
 <script src="mypage.js"></script>
