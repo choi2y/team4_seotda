@@ -30,6 +30,9 @@
         <li>
             <button onclick="showSettings()">설정</button>
         </li>
+        <li>
+            <button onclick="goToMyPage()">마이페이지</button>
+        </li>
     </ul>
 </nav>
 
@@ -40,12 +43,14 @@
         <div class="opponent">
             <div class="player">
                 <p>플레이어 1</p>
+                <p class="playerPoint" id="ai-point-1">포인트: 0</p>
                 <img class="card back" id="ai-card-1-1" src="img/0.jpg">
                 <img class="card back" id="ai-card-1-2" src="img/0.jpg">
                 <p class="bettingResult" id="ai-bet-1">대기 중...</p>
             </div>
             <div class="player">
                 <p>플레이어 3</p>
+                <p class="playerPoint" id="ai-point-3">포인트: 0</p>
                 <img class="card back" id="ai-card-3-1" src="img/0.jpg">
                 <img class="card back" id="ai-card-3-2" src="img/0.jpg">
                 <p class="bettingResult" id="ai-bet-3">대기 중...</p>
@@ -53,6 +58,7 @@
         </div>
         <div class="opponent">
             <div class="player">
+                <p class="playerPoint" id="ai-point-2">포인트: 0</p>
                 <p class="bettingResult" id="ai-bet-2">대기 중...</p>
                 <img class="card back" id="ai-card-2-1" src="img/0.jpg">
                 <img class="card back" id="ai-card-2-2" src="img/0.jpg">
@@ -67,6 +73,7 @@
         <p id="game-result"></p>
         <div class="my-cards">
             <p>내 카드</p>
+            <p class="playerPoint" id="player-point">포인트: 0</p>
             <img class="card" id="my-card-1" src="img/0.jpg">
             <img class="card" id="my-card-2" src="img/0.jpg">
             <p class="bettingResult" id="player-bet">대기 중...</p>
@@ -90,6 +97,7 @@
         <p>광땡 > 장땡 > 1~9땡 > 끗순으로 순위가 정해집니다.</p>
         <button onclick="closeRules()">닫기</button>
     </div>
+
 
 
     <!-- 설정 창 -->
