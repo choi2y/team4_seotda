@@ -207,6 +207,15 @@ p {
 }
 
 
+.setting {
+    display: none;
+    position: absolute;
+    top: 100px;
+    background: #333333;
+    border: 10px solid #cccccc;
+    width: 500px;
+}
+
 .allOpponents {
     display: flex;
     justify-content: center;
@@ -232,6 +241,7 @@ p {
     height: 120px;
     margin: 5px;
 }
+
 #game-result {
     position: absolute;
     top: 50%;
@@ -248,4 +258,6 @@ p {
     display: none;
 }
 
-
+.muteButton{
+    width: 62px;
+}
