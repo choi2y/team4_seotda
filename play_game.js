@@ -1,16 +1,15 @@
 const cards = [
-    {num: 1, name: '소나무', img: 'img/11.jpg'}, {num: 1, name: '광', img: 'img/1.jpg'},
-    {num: 2, name: '휘파람새', img: 'img/2.jpg'}, {num: 2, name: '매화꽃', img: 'img/12.jpg'},
-    {num: 3, name: '광', img: 'img/3.jpg'}, {num: 3, name: '벗꽃', img: 'img/13.jpg'},
-    {num: 4, name: '두견새', img: 'img/4.jpg'}, {num: 4, name: '등나무 꽃', img: 'img/14.jpg'},
-    {num: 5, name: '다리', img: 'img/5.jpg'}, {num: 5, name: '창포꽃', img: 'img/15.jpg'},
-    {num: 6, name: '나비', img: 'img/6.jpg'}, {num: 6, name: '모란', img: 'img/16.jpg'},
-    {num: 7, name: '멧돼지', img: 'img/7.jpg'}, {num: 7, name: '싸리 꽃', img: 'img/17.jpg'},
-    {num: 8, name: '광', img: 'img/8.jpg'}, {num: 8, name: '기러기', img: 'img/18.jpg'},
-    {num: 9, name: '술잔', img: 'img/9.jpg'}, {num: 9, name: '국화', img: 'img/19.jpg'},
-    {num: 10, name: '사슴', img: 'img/10.jpg'}, {num: 10, name: '단풍', img: 'img/20.jpg'}
+    { num: 1, name: '소나무', img: 'img/11.jpg' }, { num: 1, name: '광', img: 'img/1.jpg' },
+    { num: 2, name: '휘파람새', img: 'img/2.jpg' }, { num: 2, name: '매화꽃', img: 'img/12.jpg' },
+    { num: 3, name: '광', img: 'img/3.jpg' }, { num: 3, name: '벗꽃', img: 'img/13.jpg' },
+    { num: 4, name: '두견새', img: 'img/4.jpg' }, { num: 4, name: '등나무 꽃', img: 'img/14.jpg' },
+    { num: 5, name: '다리', img: 'img/5.jpg' }, { num: 5, name: '창포꽃', img: 'img/15.jpg' },
+    { num: 6, name: '나비', img: 'img/6.jpg' }, { num: 6, name: '모란', img: 'img/16.jpg' },
+    { num: 7, name: '멧돼지', img: 'img/7.jpg' }, { num: 7, name: '싸리 꽃', img: 'img/17.jpg' },
+    { num: 8, name: '광', img: 'img/8.jpg' }, { num: 8, name: '기러기', img: 'img/18.jpg' },
+    { num: 9, name: '술잔', img: 'img/9.jpg' }, { num: 9, name: '국화', img: 'img/19.jpg' },
+    { num: 10, name: '사슴', img: 'img/10.jpg' }, { num: 10, name: '단풍', img: 'img/20.jpg' }
 ];
-//
 
 let playerCount = parseInt(localStorage.getItem("aiCount")) + 1 || 4; // 플레이어 포함
 let deck = [];
@@ -79,21 +78,27 @@ function determineWinner() {
     let playerJokbo = getJokbo(playerCards);
     let aiJokbos = aiCards.map(getJokbo);
 
-    let allHands = [{name: "플레이어", jokbo: playerJokbo}];
+    let allHands = [{ name: "플레이어", jokbo: playerJokbo }];
     aiJokbos.forEach((jokbo, index) => {
-        allHands.push({name: `AI ${index + 1}`, jokbo});
+        allHands.push({ name: `AI ${index + 1}`, jokbo });
     });
 
-    // 족보 순서대로 정렬
     let rankedHands = allHands.sort((a, b) => compareJokbo(b.jokbo, a.jokbo));
 
     let topRankJokbo = rankedHands[0].jokbo; // 가장 높은 족보
     let winners = rankedHands.filter(hand => hand.jokbo === topRankJokbo); // 같은 족보를 가진 플레이어들
 
+    let isWin = false;
+
     if (winners.length > 1) {
-        document.getElementById("game-result").innerText = `🤝 무승부 (${topRankJokbo})`;
+        document.getElementById("game-result").innerText = ` 무승부! (${topRankJokbo})`;
     } else {
-        document.getElementById("game-result").innerText = `🎉 승자: ${winners[0].name} (${topRankJokbo})`;
+        const winner = winners[0];
+        document.getElementById("game-result").innerText = ` 승자: ${winner.name} (${topRankJokbo})`;
+
+        if (winner.name === "플레이어") {
+            isWin = true;
+        }
     }
 
     document.getElementById("game-result").style.display = "block";
@@ -103,7 +108,17 @@ function determineWinner() {
         document.getElementById(`ai-card-${i}-1`).src = aiCards[i - 1][0].img;
         document.getElementById(`ai-card-${i}-2`).src = aiCards[i - 1][1].img;
     }
+
+    //  승패 기록 업데이트
+    const storedUser = localStorage.getItem("loggedUser");
+    if (storedUser) {
+        const user = JSON.parse(storedUser);
+        updateUserRecord(user.user_id, isWin);
+    } else {
+        console.error(" 로그인된 사용자가 없습니다.");
+    }
 }
+
 
 
 function compareJokbo(jokboA, jokboB) {
@@ -115,6 +130,7 @@ function compareJokbo(jokboA, jokboB) {
     ];
     return order.indexOf(jokboB) - order.indexOf(jokboA);
 }
+
 
 
 function playerBet(action) {
@@ -134,7 +150,13 @@ function startGame() {
     initializeDeck();
     dealCards();
     updateUI();
+
+    // 게임 시작 시 결과창 강제 숨김 (초기화)
+    document.getElementById("game-result").style.display = "none";
+    document.getElementById("game-result").innerText = "";  // 이전 승패 결과 제거
+
 }
+
 
 function restartGame() {
     localStorage.clear();
@@ -149,36 +171,95 @@ function closeRules() {
     document.getElementById("rules-modal").style.display = "none";
 }
 
-function showSettings() {
-    document.getElementById("settings-modal").style.display = "block";
-}
-
-function closeSettings() {
-    document.getElementById("settings-modal").style.display = "none";
-}
-
 document.addEventListener("DOMContentLoaded", startGame);
 
+//게임 승패 기록 함수
+async function updateUserRecord(user_id, isWin) {
+    try {
+        if (typeof db === "undefined" || !db) {
+            console.warn("⚠️ 데이터베이스가 초기화되지 않았습니다. 초기화 실행...");
+            await initDatabase();
+        }
 
-// 로그아웃 기능
-function logout() {
-    localStorage.removeItem("loggedUser");
-    window.location.href = "login.html";
-}window.logout = logout;
+        // 승패 업데이트 SQL 실행
+        const query = `
+            UPDATE user_record
+            SET win_count = win_count + ?, lose_count = lose_count + ?
+            WHERE user_id = ?;
+        `;
+        const stmt = db.prepare(query);
+        stmt.run([isWin ? 1 : 0, isWin ? 0 : 1, user_id]);
+        stmt.free();
 
-// 음악 설정 기능
-const music = document.getElementById("BGM001");
-const muteButton = document.getElementById("muteButton")
-music.volume = 50;
-function toggleMute() {
-    music.muted = !music.muted;
-    if (music.muted) {
-        muteButton.innerText = "🔇";
-    } else {
-        muteButton.innerText = "🔊";
+        console.log(`✅ ${user_id}의 승패 기록 업데이트 완료 (승리: ${isWin ? 1 : 0}, 패배: ${isWin ? 0 : 1})`);
+
+        // 데이터베이스 백업 (localStorage 저장)
+        saveDatabase();
+
+        // 🎯 로컬스토리지의 승패 데이터도 즉시 반영
+        const storedUser = JSON.parse(localStorage.getItem("loggedUser"));
+        if (storedUser) {
+            storedUser.win_count = (storedUser.win_count || 0) + (isWin ? 1 : 0);
+            storedUser.lose_count = (storedUser.lose_count || 0) + (isWin ? 0 : 1);
+            localStorage.setItem("loggedUser", JSON.stringify(storedUser));
+        }
+    } catch (error) {
+        console.error("❌ 승패 기록 업데이트 중 오류 발생:", error);
     }
 }
 
-function changeVolume(value) {
-    music.volume = value;
+// 게임 종료 후 마이페이지로 이동
+window.restartGame = function () {
+    saveDatabase();  // 변경 사항 저장
+    window.location.href = "mypage.html";
+};
+
+
+
+function saveDatabase() {
+    if (!db) return;
+
+    const data = db.export();
+    const blob = new Blob([data], { type: "application/octet-stream" });
+    const reader = new FileReader();
+
+    reader.onload = function () {
+        localStorage.setItem("savedDB", reader.result);
+        console.log("✅ 데이터베이스가 로컬스토리지에 저장되었습니다.");
+    };
+
+    reader.readAsDataURL(blob);
 }
+
+async function initDatabase() {
+    const SQL = await initSqlJs({
+        locateFile: file => `https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.wasm`
+    });
+
+    try {
+        const response = await fetch("sample-db.sqlite");
+        if (!response.ok) throw new Error("데이터베이스 파일을 찾을 수 없습니다.");
+
+        const data = await response.arrayBuffer();
+        db = new SQL.Database(new Uint8Array(data));
+        console.log("✅ 데이터베이스가 성공적으로 로드되었습니다!");
+    } catch (error) {
+        console.warn("⚠️ 데이터베이스 파일이 없어 새로 생성합니다.");
+        db = new SQL.Database();
+
+        // user_record 테이블 생성 (없을 경우)
+        db.run(`
+            CREATE TABLE IF NOT EXISTS user_record (
+                user_id TEXT PRIMARY KEY,
+                win_count INTEGER NOT NULL DEFAULT 0,
+                lose_count INTEGER NOT NULL DEFAULT 0,
+                FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+            );
+        `);
+        console.log("✅ 새 데이터베이스가 생성되었습니다.");
+    }
+}
+// -------------------------------------------------------------------
+
+
+

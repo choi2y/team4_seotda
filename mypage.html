@@ -7,7 +7,9 @@
   <link rel="stylesheet" href="mypage.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
 </head>
-<body>
+<body onload="loadUserProfile(JSON.parse(localStorage.getItem('loggedUser')).user_id)">
+
+<h2>마이페이지</h2>
 <div class="container">
   <div class="profile-card">
     <div class="profile-card__img">
