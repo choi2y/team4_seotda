@@ -3,26 +3,35 @@
 <head>
     <meta charset="UTF-8">
     <title>섯다 게임</title>
-    <link rel="stylesheet" href="reset.css">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <link rel="stylesheet" href="play_game.css">
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+    <link href="reset.css" rel="stylesheet">
+    <link crossorigin="anonymous" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+          integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" rel="stylesheet">
+    <link href="play_game.css" rel="stylesheet">
+    <script crossorigin="anonymous"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
-            crossorigin="anonymous"></script>
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="play_game.css" rel="stylesheet">
 </head>
 <body>
+<audio class="BGM" id="BGM001" src="bgm/jazz-happy-110855.mp3" autoplay loop></audio>
 
 <nav class="navbar">
     <h1>섯다 게임</h1>
     <ul>
-        <li><button onclick="startGame()">게임 시작</button></li>
-        <li><button onclick="showRules()">규칙</button></li>
-        <li><button onclick="restartGame()">설정</button></li>
+        <li>
+            <button onclick="startGame()">게임 시작</button>
+        </li>
+        <li>
+            <button onclick="showRules()">규칙</button>
+        </li>
+        <li>
+            <button onclick="showSettings()">설정</button>
+        </li>
     </ul>
 </nav>
 
 <div class="game-container">
+
 
     <!-- 상대 플레이어 카드 -->
     <div class="allOpponents">
@@ -48,10 +57,13 @@
                 <p>플레이어 2</p>
             </div>
         </div>
+
     </div>
 
     <!-- 내 카드 -->
     <div class="my-area">
+        <!-- 승패 결과를 표시할 영역 추가 -->
+        <p id="game-result"></p>
         <div class="my-cards">
             <p>내 카드</p>
             <img class="card" id="my-card-1" src="img/0.jpg">
@@ -71,15 +83,30 @@
     </div>
 
     <!-- 규칙 창 -->
-    <div id="rules-modal" class="hidden">
+    <div class="hidden" id="rules-modal">
         <h2>게임 규칙</h2>
         <p>섯다 게임은 2장의 패를 조합해 가장 높은 족보를 만드는 게임입니다.</p>
         <p>광땡 > 장땡 > 1~9땡 > 끗순으로 순위가 정해집니다.</p>
         <button onclick="closeRules()">닫기</button>
     </div>
 
+
+    <!-- 설정 창 -->
+    <div class="setting" id="settings-modal">
+        <h2>게임 설정</h2>
+
+        <div>
+            <input type="range" id="volumeControl" min="0" max="100" step="10" value="50" onchange="changeVolume(this.value)">
+            <input type="number" id="volumeValue" onchange="changeVolume(this.value)">
+            <button id="muteButton" onclick="toggleMute()">🔊</button>
+
+        </div>
+        <button onclick="logout()">로그아웃</button>
+        <button onclick="closeSettings()">닫기</button>
+    </div>
 </div>
 
 <script src="play_game.js"></script>
+
 </body>
 </html>
