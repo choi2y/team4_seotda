@@ -12,7 +12,7 @@
             crossorigin="anonymous"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/sql.js/1.6.2/sql-wasm.js"></script>
-    <script src="play_game.js"></script>
+
 
 </head>
 <body>
@@ -97,15 +97,15 @@
         <h2>게임 설정</h2>
 
         <div>
-            <input type="range" id="volumeControl" min="0" max="100" step="10" value="50" onchange="changeVolume(this.value)">
-            <input type="number" id="volumeValue" onchange="changeVolume(this.value)">
-            <button id="muteButton" onclick="toggleMute()">🔊</button>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5" onchange="changeVolume(this.value)">
+            <button class="muteButton" id="muteButton" onclick="toggleMute()">🔊</button>
 
         </div>
         <button onclick="logout()">로그아웃</button>
+        <button onclick="moveSelect()">난이도 변경</button>
         <button onclick="closeSettings()">닫기</button>
     </div>
 </div>
-
+<script src="play_game.js"></script>
 </body>
 </html>

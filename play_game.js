@@ -260,6 +260,68 @@ async function initDatabase() {
     }
 }
 // -------------------------------------------------------------------
+document.addEventListener("DOMContentLoaded", function () {
+    const music = document.getElementById("BGM001");
+    const muteButton = document.getElementById("muteButton");
+
+    if (music) {
+        music.volume = 0.5;
+    }
+
+    if (muteButton) {
+        muteButton.addEventListener("click", toggleMute);
+    } else {
+        console.error("⚠️ 'muteButton' 요소를 찾을 수 없습니다.");
+    }
+});
+
+function toggleMute() {
+    const music = document.getElementById("BGM001");
+    const muteButton = document.getElementById("muteButton");
+    if (music && muteButton) {
+        music.muted = !music.muted;
+        muteButton.innerText = music.muted ? "🔈" : "🔊";
+    } else {
+        console.error("⚠️ 배경 음악 또는 버튼 요소를 찾을 수 없습니다.");
+    }
+}
+
+function changeVolume(value) {
+    const music = document.getElementById("BGM001");
+    if (music) {
+        let volume = Math.max(0, Math.min(1, value)); // 0~1 범위 제한
+        music.volume = volume;
+        console.log(`🎵 볼륨 조절: ${Math.round(volume * 100)}%`);
+    } else {
+        console.error("⚠️ 배경 음악 요소를 찾을 수 없습니다.");
+    }
+}
 
 
+function showSettings() {
+    setTimeout(() => {
+        const settingsModal = document.getElementById("settings-modal");
+        if (settingsModal) {
+            settingsModal.style.display = "block";
+        } else {
+            console.error("⚠️ 설정 모달을 찾을 수 없습니다.");
+        }
+    }, 100);
+}
 
+function closeSettings() {
+    const settingsModal = document.getElementById("settings-modal");
+    if (settingsModal) {
+        settingsModal.style.display = "none";
+    }
+}
+
+function moveSelect() {
+    window.location.href = "select_mode.html";
+}
+
+function logout() {
+    localStorage.removeItem("loggedUser");
+    window.location.href = "login.html";
+}
+window.logout = logout;
