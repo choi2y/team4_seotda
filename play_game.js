@@ -169,16 +169,21 @@ function logout() {
 // 음악 설정 기능
 const music = document.getElementById("BGM001");
 const muteButton = document.getElementById("muteButton")
-music.volume = 50;
+music.volume = 0.5;
 function toggleMute() {
     music.muted = !music.muted;
     if (music.muted) {
-        muteButton.innerText = "🔇";
+        muteButton.innerText = "🔈";
+
     } else {
         muteButton.innerText = "🔊";
+
     }
 }
 
 function changeVolume(value) {
     music.volume = value;
+}
+function moveSelect(){
+    window.location.href = "select_mode.html";
 }

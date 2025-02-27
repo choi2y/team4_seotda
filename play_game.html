@@ -10,10 +10,10 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
             integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
             crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="play_game.css">
 </head>
 <body>
 <audio class="BGM" id="BGM001" src="bgm/jazz-happy-110855.mp3" autoplay loop></audio>
-
 <nav class="navbar">
     <h1>섯다 게임</h1>
     <ul>
@@ -93,12 +93,12 @@
         <h2>게임 설정</h2>
 
         <div>
-            <input type="range" id="volumeControl" min="0" max="100" step="10" value="50" onchange="changeVolume(this.value)">
-            <input type="number" id="volumeValue" onchange="changeVolume(this.value)">
-            <button id="muteButton" onclick="toggleMute()">🔊</button>
+            <input type="range" id="volumeControl" min="0" max="1" step="0.1" value="0.5" onchange="changeVolume(this.value)">
+            <button class="muteButton" id="muteButton" onclick="toggleMute()">🔊</button>
 
         </div>
         <button onclick="logout()">로그아웃</button>
+        <button onclick="moveSelect()">난이도 변경</button>
         <button onclick="closeSettings()">닫기</button>
     </div>
 </div>
