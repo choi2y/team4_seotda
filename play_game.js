@@ -12,7 +12,9 @@ const cards = [
 ];
 //
 
-    let playerCount = parseInt(localStorage.getItem("aiCount")) + 1 || 4; // 플레이어 포함
+    let playerCount = parseInt(localStorage.getItem("aiCount")) + 1; // 플레이어 포함
+    let aiDifficulty = localStorage.getItem("difficulty");// 난이도 설정
+
     let deck = [];
     let playerCards = [];
     let aiCards = [];
@@ -78,7 +80,6 @@ function getJokbo(cards) {
     return sum === 0 ? "망통" : `${sum}끗`;
 }
 
-
 function determineWinner() {
     let playerJokbo = getJokbo(playerCards);
     let aiJokbos = aiCards.map(getJokbo);
@@ -106,15 +107,31 @@ function determineWinner() {
     for (let i = 1; i < playerCount; i++) {
         document.getElementById(`ai-card-${i}-1`).src = aiCards[i - 1][0].img;
         document.getElementById(`ai-card-${i}-2`).src = aiCards[i - 1][1].img;
-        betting(aiBettingType(), true);
+        console.log(`AI ${i} 족보: ${getJokbo(aiCards[i - 1])}`); // ✅ AI별 족보 확인
+        betting(aiBettingType(aiDifficulty, aiCards[i-1]), true);
     }
 }
 // ai 배팅 타입 설정
-function aiBettingType() {
+function aiBettingType(aiDifficulty, aiCards) {
+    return aiDifficulty === "easy" ? easyAIBettingType() : mediumAIBetting(aiCards)
+}
+function easyAIBettingType() {
     const bettingOptions = ["다이", "콜", "따당", "올인"];
     return bettingType = bettingOptions[Math.floor(Math.random() * bettingOptions.length)];
 }
-
+function mediumAIBetting(aiCards) {
+    let aiJokbo = getJokbo(aiCards); // AI 카드의 족보 확인
+    console.log(`AI 족보: ${aiJokbo}`); // ✅ AI별로 다르게 나오도록 디버깅
+    if (["38광땡", "18광땡", "13광땡", "장땡", "구땡", "팔땡"].some(jokbo => aiJokbo.includes(jokbo))) {
+        return "올인";
+    } else if (["칠땡", "육땡", "오땡", "사땡", "삼땡", "이땡", "삥땡"].some(jokbo => aiJokbo.includes(jokbo))) {
+        return "따당";
+    } else if (["망통", "1끗", "2끗", "3끗"].some(jokbo => aiJokbo.includes(jokbo))) {
+        return "다이";
+    } else {
+        return "콜";
+    }
+}
 
 function compareJokbo(jokboA, jokboB) {
     const order = [
@@ -166,6 +183,11 @@ function startGame() {
     initializeDeck();
     dealCards();
     updateUI();
+}
+
+// 플레이어 게임 결과 반영
+function gameResult() {
+
 }
 
 function restartGame() {
