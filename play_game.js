@@ -135,6 +135,9 @@ function getJokbo(cards) {
     // 숫자 땡 판별
     if (num1 === num2) return `${num1}땡`;
 
+    // 갑오 판별 (합이 9인 경우)
+    if ((num1 + num2) % 10 === 9) return "갑오";
+
     // 끗수 계산
     let sum = (num1 + num2) % 10;
     return sum === 0 ? "망통" : `${sum}끗`;
@@ -306,7 +309,7 @@ function restartGame() {
 }
 
 function showRules() {
-    document.getElementById("rules-modal").style.display = "block";
+    document.getElementById("rules-modal").style.display = "flex";
 }
 
 function closeRules() {
