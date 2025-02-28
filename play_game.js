@@ -146,15 +146,17 @@ function getJokbo(cards) {
 }
 
 
-function determineWinner() {
+async function determineWinner() {
     let playerJokbo = getJokbo(playerCards);
     let aiJokbos = aiCards.map(getJokbo);
     let allHands = [];
-    if(lastPlayerAction !== "다이") { allHands = [{ name: "플레이어", jokbo: playerJokbo }];}
+    if (lastPlayerAction !== "다이") {
+        allHands = [{name: "플레이어", jokbo: playerJokbo}];
+    }
     console.log(playerJokbo); // 플레이어 족보 확인
 
     aiJokbos.forEach((jokbo, index) => {
-        allHands.push({ name: `AI ${index + 1}`, jokbo });
+        allHands.push({name: `AI ${index + 1}`, jokbo});
     });
 
     let rankedHands = allHands.sort((a, b) => compareJokbo(b.jokbo, a.jokbo));
@@ -174,7 +176,9 @@ function determineWinner() {
             await initDatabase();
         }
 
-        const query = `SELECT win_count, lose_count FROM user_record WHERE user_id = ?;`;
+        const query = `SELECT win_count, lose_count
+                       FROM user_record
+                       WHERE user_id = ?;`;
         const stmt = db.prepare(query);
         stmt.bind([user_id]);
 
