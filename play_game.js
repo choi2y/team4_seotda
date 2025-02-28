@@ -22,7 +22,7 @@ let lastPlayerAction = "";
 let playerPoint = 50000000; // 플레이어의 초기 포인트
 let aiPoints = [];//ai포인트
 
-let bettingPoint = 10000; // 기본 배팅 금액
+let bettingPoint = 100000; // 기본 배팅 금액
 let totalBettingPoint = 0; // 총 배팅 금액
 let playerBettingPoint = 0; // 플레이어가 배팅한 금액
 
@@ -230,6 +230,7 @@ async function determineWinner() {
     // 포인트 업데이트 UI 반영
     document.getElementById("player-point").innerText = `포인트: ${formatMoney(playerPoint)}`;
     for (let i = 1; i < playerCount; i++) {
+        if(aiPoints[i-1] <= 0) { aiPoints[i-1] = 50000000; }
         document.getElementById(`ai-point-${i}`).innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`;
     }
 
