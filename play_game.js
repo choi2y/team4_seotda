@@ -17,10 +17,12 @@ let deck = [];
 let playerCards = [];
 let aiCards = [];
 
+let lastPlayerAction = "";
+
 let playerPoint = 50000000; // 플레이어의 초기 포인트
 let aiPoints = [];//ai포인트
 
-let bettingPoint = 10000; // 기본 배팅 금액
+let bettingPoint = 100000; // 기본 배팅 금액
 let totalBettingPoint = 0; // 총 배팅 금액
 let playerBettingPoint = 0; // 플레이어가 배팅한 금액
 
@@ -33,6 +35,7 @@ function initializeDeck() {
 function initializePoints() {
     initPlayerPoint(); // 플레이어 포인트 불러오기
 
+    // AI 포인트 불러오기 (localStorage에서 값 불러오기)
     const savedAIPoints = localStorage.getItem("aiPoints");
     if (savedAIPoints) {
         aiPoints = JSON.parse(savedAIPoints);
@@ -71,7 +74,6 @@ function createAIUI() {
         opponentsContainer.appendChild(aiPlayer);
     }
 }
-
 
 function dealCards() {
     playerCards = [deck.pop(), deck.pop()];
@@ -144,8 +146,12 @@ function getJokbo(cards) {
 async function determineWinner() {
     let playerJokbo = getJokbo(playerCards);
     let aiJokbos = aiCards.map(getJokbo);
+    let allHands = [];
+    if (lastPlayerAction !== "다이") {
+        allHands = [{name: "플레이어", jokbo: playerJokbo}];
+    }
+    console.log(playerJokbo); // 플레이어 족보 확인
 
-    let allHands = [{name: "플레이어", jokbo: playerJokbo}];
     aiJokbos.forEach((jokbo, index) => {
         allHands.push({name: `AI ${index + 1}`, jokbo});
     });
@@ -186,12 +192,16 @@ async function determineWinner() {
     if (winners.length > 1) {
         resultMessage = ` 무승부! (${topRankJokbo}) 배팅 금액 반환`;
         playerPoint += playerBettingPoint;
+        document.getElementById("player-point").innerText = `포인트: ${formatMoney(playerPoint)}`;
+
         for (let i = 1; i < playerCount; i++) {
             aiPoints[i - 1] += bettingPoint;
+            document.getElementById(`ai-point-${i}`).innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`;
         }
         console.log(" 무승부! 배팅 금액 반환");
     } else {
         const winner = winners[0];
+        document.getElementById("game-result").innerText = ` 승자: ${winner.name} (${topRankJokbo})`;
 
         if (winner.name === "플레이어") {
             isWin = true;
@@ -218,6 +228,9 @@ async function determineWinner() {
     // 포인트 업데이트 UI 반영
     document.getElementById("player-point").innerText = `포인트: ${formatMoney(playerPoint)}`;
     for (let i = 1; i < playerCount; i++) {
+        if (aiPoints[i - 1] <= 0) {
+            aiPoints[i - 1] = 50000000;
+        }
         document.getElementById(`ai-point-${i}`).innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`;
     }
 
@@ -244,10 +257,14 @@ function compareJokbo(jokboA, jokboB) {
 
 
 function playerBet(action) {
+    lastPlayerAction = action;
     alert(`플레이어가 '${action}'을 선택했습니다.`);
 
     let bettingAmount = 0;
     switch (action) {
+        case "다이":
+            bettingAmount = 0;
+            break;
         case "콜":
             bettingAmount = bettingPoint;
             break;
@@ -257,6 +274,17 @@ function playerBet(action) {
         case "올인":
             bettingAmount = playerPoint;  // 플레이어가 가진 모든 돈을 배팅
             break;
+        default:
+            let customAmount = prompt("배팅할 금액을 입력하세요: (기본 단위: 만)", "100");
+            if (!isNaN(parseInt(customAmount)) && parseInt(customAmount) * 10000 <= playerPoint) {
+                bettingAmount = parseInt(customAmount) * 10000;
+            } else if (parseInt(customAmount) > playerPoint) {
+                alert("보유 금액이 부족합니다. 다시 입력해주세요.");
+                return;
+            } else {
+                alert("잘못된 입력입니다. 다시 입력해주세요");
+                return;
+            }
     }
 
     if (bettingAmount > playerPoint) {
@@ -271,7 +299,6 @@ function playerBet(action) {
     betting(action, false); // 플레이어 배팅 결과 UI에 반영
     aiTurn();
 }
-
 
 function aiTurn() {
     setTimeout(() => {
@@ -329,8 +356,7 @@ async function updateUserRecord(user_id, isWin) {
         // 승패 업데이트 SQL 실행
         const query = `
             UPDATE user_record
-            SET win_count  = win_count + ?,
-                lose_count = lose_count + ?
+            SET win_count = win_count + ?, lose_count = lose_count + ?
             WHERE user_id = ?;
         `;
         const stmt = db.prepare(query);
@@ -394,33 +420,12 @@ async function initDatabase() {
 
         // user_record 테이블 생성 (없을 경우)
         db.run(`
-            CREATE TABLE IF NOT EXISTS user_record
-            (
-                user_id
-                TEXT
-                PRIMARY
-                KEY,
-                win_count
-                INTEGER
-                NOT
-                NULL
-                DEFAULT
-                0,
-                lose_count
-                INTEGER
-                NOT
-                NULL
-                DEFAULT
-                0,
-                FOREIGN
-                KEY
-            (
-                user_id
-            ) REFERENCES users
-            (
-                user_id
-            ) ON DELETE CASCADE
-                );
+            CREATE TABLE IF NOT EXISTS user_record (
+                user_id TEXT PRIMARY KEY,
+                win_count INTEGER NOT NULL DEFAULT 0,
+                lose_count INTEGER NOT NULL DEFAULT 0,
+                FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+            );
         `);
         console.log("✅ 새 데이터베이스가 생성되었습니다.");
     }
@@ -524,6 +529,7 @@ function betting(action, isAI = false, aiIndex = null) {
     }
     totalBettingPoint += bettingAmount;
 
+
     // 💡 AI 배팅 상태 표시
     if (isAI && aiIndex !== null) {
         document.getElementById(`ai-bet-${aiIndex}`).innerText = action; // AI 배팅 표시
@@ -598,9 +604,7 @@ async function initPlayerPoint() {
             await initDatabase();
         }
 
-        const query = `SELECT game_money
-                       FROM users
-                       WHERE user_id = ?;`;
+        const query = `SELECT game_money FROM users WHERE user_id = ?;`;
         const stmt = db.prepare(query);
         stmt.bind([userId]);
 
@@ -637,9 +641,7 @@ async function updatePlayerPoint() {
         }
 
         // ✅ `users` 테이블의 `game_money` 업데이트
-        const query = `UPDATE users
-                       SET game_money = ?
-                       WHERE user_id = ?;`;
+        const query = `UPDATE users SET game_money = ? WHERE user_id = ?;`;
         const stmt = db.prepare(query);
         stmt.run([playerPoint, userId]);
         stmt.free();
@@ -658,18 +660,9 @@ async function updatePlayerPoint() {
     }
 }
 
-
 function formatMoney(value) {
-    if (value >= 100000000) {
-        return (value / 100000000) + "억 원";
-    } else if (value >= 10000000) {
-        return (value / 10000000) + "천만 원";
-    } else if (value >= 1000000) {
-        return (value / 1000000) + "백만 원";
-    } else if (value >= 10000) {
+    if (value >= 10000) {
         return (value / 10000) + "만 원";
-    } else if (value >= 1000) {
-        return (value / 1000) + "천 원";
     }
     return value + " 원";
 }
@@ -677,9 +670,3 @@ function formatMoney(value) {
 function saveAIPoints() {
     localStorage.setItem("aiPoints", JSON.stringify(aiPoints));  // 여러 AI 포인트를 배열로 저장
 }
-
-
-
-
-
-
