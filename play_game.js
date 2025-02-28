@@ -26,7 +26,6 @@ let bettingPoint = 10000; // 기본 배팅 금액
 let totalBettingPoint = 0; // 총 배팅 금액
 let playerBettingPoint = 0; // 플레이어가 배팅한 금액
 
-
 function initializeDeck() {
     deck = [...cards];
     deck.sort(() => Math.random() - 0.5); // 카드 섞기
@@ -260,19 +259,19 @@ function playerBet(action) {
     lastPlayerAction = action;
     alert(`플레이어가 '${action}'을 선택했습니다.`);
 
-    let bettingAmount = 0;
     switch (action) {
         case "다이":
-            bettingAmount = 0;
+            playerBettingPoint = 0;
             break;
         case "콜":
-            bettingAmount = bettingPoint;
+            playerBettingPoint = bettingPoint;
             break;
         case "따당":
-            bettingAmount = bettingPoint * 2;
+            playerBettingPoint = bettingPoint * 2;
+            bettingPoint = playerBettingPoint;
             break;
         case "올인":
-            bettingAmount = playerPoint;  // 플레이어가 가진 모든 돈을 배팅
+            playerBettingPoint = playerPoint;  // 플레이어가 가진 모든 돈을 배팅
             break;
         default:
             let customAmount = prompt("배팅할 금액을 입력하세요: (기본 단위: 만)", "100");
@@ -282,12 +281,7 @@ function playerBet(action) {
             else{ alert("잘못된 입력입니다. 다시 입력해주세요"); return;}
     }
 
-    if (bettingAmount > playerPoint) {
-        alert("💰 보유 금액이 부족합니다!");
-        return;
-    }
-
-    playerPoint -= bettingAmount; // 🔥 포인트 차감
+    playerPoint -= playerBettingPoint; // 🔥 포인트 차감
     updatePlayerPoint(); // 🔥 데이터베이스 업데이트
     document.getElementById("player-point").innerText = `포인트: ${playerPoint}`; // UI 반영
 
@@ -513,12 +507,12 @@ function betting(action, isAI = false, aiIndex = null) {
             bettingAmount = bettingPoint * 2;
             break;
         case "올인":
-            bettingAmount = isAI ? 150000 : playerPoint; // AI는 15만원, 플레이어는 전부
+            bettingAmount = isAI ? 3000000 : playerPoint; // AI는 300만원, 플레이어는 전부
             break;
     }
 
     if (!isAI) {
-        playerBettingPoint = bettingAmount;
+        bettingAmount = playerBettingPoint;
     } else {
         // AI 배팅 금액을 반영
         aiPoints[aiIndex - 1] -= bettingAmount;
