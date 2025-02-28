@@ -66,9 +66,9 @@ function createAIUI() {
     for (let i = 1; i < playerCount; i++) {
         const aiPlayer = document.createElement("div");
         aiPlayer.classList.add("player");
-        aiPlayer.innerHTML = `
-            <p>플레이어 ${i}</p>
-            <p id="ai-point-${i}" class="ai-money">포인트: ${formatMoney(aiPoints[i - 1])}</p> 
+        aiPlayer.innerHTML = `<div class="forP">
+            <p class = "AINumber">플레이어 ${i}</p>
+            <p id="ai-point-${i}" class="ai-money">포인트: ${formatMoney(aiPoints[i - 1])}</p> </div>
             <img class="card back" id="ai-card-${i}-1" src="img/0.jpg">
             <img class="card back" id="ai-card-${i}-2" src="img/0.jpg">
             <p class="bettingResult" id="ai-bet-${i}">대기 중...</p>
@@ -76,7 +76,6 @@ function createAIUI() {
         opponentsContainer.appendChild(aiPlayer);
     }
 }
-
 
 function dealCards() {
     playerCards = [deck.pop(), deck.pop()];
@@ -204,6 +203,7 @@ async function determineWinner() {
         console.log(" 무승부! 배팅 금액 반환");
     } else {
         const winner = winners[0];
+        document.getElementById("game-result").innerText = ` 승자: ${winner.name} (${topRankJokbo})`;
 
         if (winner.name === "플레이어") {
             isWin = true;
@@ -294,8 +294,6 @@ function playerBet(action) {
     betting(action, false); // 플레이어 배팅 결과 UI에 반영
     aiTurn();
 }
-
-
 
 function aiTurn() {
     setTimeout(() => {
@@ -429,6 +427,7 @@ async function initDatabase() {
         console.log("✅ 새 데이터베이스가 생성되었습니다.");
     }
 }
+
 // -------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
     const music = document.getElementById("BGM001");
