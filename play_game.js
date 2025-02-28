@@ -17,6 +17,8 @@ let deck = [];
 let playerCards = [];
 let aiCards = [];
 
+let lastPlayerAction = "";
+
 let playerPoint = 50000000; // 플레이어의 초기 포인트
 let aiPoints = [];//ai포인트
 
@@ -108,25 +110,6 @@ function getJokbo(cards) {
         if ((num1 === 1 && num2 === 3) || (num1 === 3 && num2 === 1)) return "13광땡";
     }
 
-    // 특수 족보 처리
-    const specialHands = {
-        "알리": [[1, "소나무"], [2, "휘파람새"]],
-        "독사": [[1, "소나무"], [4, "두견새"]],
-        "구삥": [[1, "소나무"], [9, "술잔"]],
-        "장삥": [[1, "소나무"], [10, "사슴"]],
-        "장사": [[4, "두견새"], [10, "사슴"]],
-        "세륙": [[4, "두견새"], [6, "나비"]]
-    };
-
-    for (const [name, pair] of Object.entries(specialHands)) {
-        if (
-            (num1 === pair[0][0] && name1 === pair[0][1] && num2 === pair[1][0] && name2 === pair[1][1]) ||
-            (num2 === pair[0][0] && name2 === pair[0][1] && num1 === pair[1][0] && name1 === pair[1][1])
-        ) {
-            return name;
-        }
-    }
-
     // 숫자 땡 판별
     if (num1 === num2) return `${num1}땡`;
 
@@ -139,8 +122,10 @@ function getJokbo(cards) {
 function determineWinner() {
     let playerJokbo = getJokbo(playerCards);
     let aiJokbos = aiCards.map(getJokbo);
+    let allHands = [];
+    if(lastPlayerAction !== "다이") { allHands = [{ name: "플레이어", jokbo: playerJokbo }];}
+    console.log(playerJokbo); // 플레이어 족보 확인
 
-    let allHands = [{ name: "플레이어", jokbo: playerJokbo }];
     aiJokbos.forEach((jokbo, index) => {
         allHands.push({ name: `AI ${index + 1}`, jokbo });
     });
@@ -166,7 +151,7 @@ function determineWinner() {
 
         console.log("⚖ 무승부! 배팅 금액이 반환되었습니다.");
     } else {
-        const winner = winners[0];
+        let winner = winners[0];
         document.getElementById("game-result").innerText = `승자: ${winner.name} (${topRankJokbo})`;
 
         if (winner.name === "플레이어") {
@@ -206,19 +191,21 @@ function compareJokbo(jokboA, jokboB) {
     const order = [
         "38광땡", "18광땡", "13광땡",  // 광땡 최우선
         "장땡", "구땡", "팔땡", "칠땡", "육땡", "오땡", "사땡", "삼땡", "이땡", "삥땡",
-        "알리", "독사", "구삥", "장삥", "장사", "세륙",
         "갑오", "9끗", "8끗", "7끗", "6끗", "5끗", "4끗", "3끗", "2끗", "1끗", "망통"
     ];
     return order.indexOf(jokboB) - order.indexOf(jokboA);
 }
 
 
-
 function playerBet(action) {
+    lastPlayerAction = action;
     alert(`플레이어가 '${action}'을 선택했습니다.`);
 
     let bettingAmount = 0;
     switch (action) {
+        case "다이":
+            bettingAmount = 0;
+            break;
         case "콜":
             bettingAmount = bettingPoint;
             break;
@@ -228,6 +215,12 @@ function playerBet(action) {
         case "올인":
             bettingAmount = playerPoint;  // 플레이어가 가진 모든 돈을 배팅
             break;
+        default:
+            let customAmount = prompt("배팅할 금액을 입력하세요: (기본 단위: 만)", "100");
+           if (!isNaN(parseInt(customAmount)) && parseInt(customAmount)*10000 <= playerPoint) {
+                bettingAmount = parseInt(customAmount)*10000;
+            } else if(parseInt(customAmount) > playerPoint) {alert("보유 금액이 부족합니다. 다시 입력해주세요."); return;}
+           else{ alert("잘못된 입력입니다. 다시 입력해주세요"); return;}
     }
 
     if (bettingAmount > playerPoint) {
@@ -474,6 +467,7 @@ function betting(action, isAI = false, aiIndex = null) {
     }
     totalBettingPoint += bettingAmount;
 
+
     // 💡 AI 배팅 상태 표시
     if (isAI && aiIndex !== null) {
         document.getElementById(`ai-bet-${aiIndex}`).innerText = action; // AI 배팅 표시
@@ -605,16 +599,8 @@ async function updatePlayerPoint() {
 }
 
 function formatMoney(value) {
-    if (value >= 100000000) {
-        return (value / 100000000) + "억 원";
-    } else if (value >= 10000000) {
-        return (value / 10000000) + "천만 원";
-    } else if (value >= 1000000) {
-        return (value / 1000000) + "백만 원";
-    } else if (value >= 10000) {
+    if (value >= 10000) {
         return (value / 10000) + "만 원";
-    } else if (value >= 1000) {
-        return (value / 1000) + "천 원";
     }
     return value + " 원";
 }
@@ -622,9 +608,3 @@ function formatMoney(value) {
 function saveAIPoints() {
     localStorage.setItem("aiPoints", JSON.stringify(aiPoints));  // 여러 AI 포인트를 배열로 저장
 }
-
-
-
-
-
-
