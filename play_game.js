@@ -526,7 +526,7 @@ function betting(action, isAI = false, aiIndex = null) {
     totalBettingPoint += bettingAmount;
 
 
-    // 💡 AI 배팅 상태 표시
+    //  AI 배팅 상태 표시
     if (isAI && aiIndex !== null) {
         const aiJokbo = getJokbo(aiCards[aiIndex - 1]); // AI 족보 가져오기
         document.getElementById(`ai-bet-${aiIndex}`).innerHTML = `${action} <br> <strong>${aiJokbo}</strong>`; // AI 배팅 + 족보 표시
