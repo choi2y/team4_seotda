@@ -1,12 +1,45 @@
-body {
-    background-color: #4d0d0d; /* 섯다 느낌의 배경색 */
-    color: #f5d76e;
-    font-family: 'Arial', sans-serif;
-    text-align: center;
+@font-face {
+    font-family: 'ChosunGs';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGs.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
 }
+
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    height: 100%;
+    overflow-x: hidden; /* 가로 스크롤 방지 */
+    background-color: #0a3d00; /* 흰색 영역이 남아도 배경 유지 */
+}
+
+
+/*body {*/
+/*    background-color: #4d0d0d; !* 섯다 느낌의 배경색 *!*/
+/*    color: #f5d76e;*/
+/*    font-family: 'ChosunGs', sans-serif; !* 입력 필드 폰트 적용 *!*/
+/*    text-align: center;*/
+/*    background-image: url("img/game_background.png");*/
+/*    */
+/*}*/
+body {
+    color: #f5d76e;
+    font-family: 'ChosunGs', sans-serif;
+    background-image: url("img/game_background.png");
+    background-size: cover; /* 가로/세로 비율을 유지하면서 화면을 꽉 채움 */
+    background-repeat: no-repeat; /* 이미지 반복 방지 */
+    background-position: center top; /* 이미지 위치 조정 */
+}
+
+
 @keyframes flip-card {
-    0% { transform: rotateY(0deg); }
-    100% { transform: rotateY(180deg); }
+    0% {
+        transform: rotateY(0deg);
+    }
+    100% {
+        transform: rotateY(180deg);
+    }
 }
 
 
@@ -18,6 +51,8 @@ body {
     justify-content: space-between;
     align-items: center;
     color: white;
+    margin-bottom: 10px;
+
 }
 
 .navbar a {
@@ -43,32 +78,31 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    height: 80vh;
 }
 
-.allOpponents > .opponent {
-    top: 90px;
-    position: absolute;
-    margin-bottom: 40px;
+/*.allOpponents > .opponent {*/
+/*    top: 90px;*/
+/*    position: absolute;*/
+/*    margin-bottom: 40px;*/
 
-}
+/*}*/
 
-/*  1그룹 위치 조정    */
-.allOpponents > .opponent:nth-child(1) {
-    margin-bottom: 40px;
-    left: 50px;
-    margin-left: 0;
-    margin-right: auto; /* 나머지 요소들을 오른쪽으로 밀어냄 */
-}
+/*!*  1그룹 위치 조정    *!*/
+/*.allOpponents > .opponent:nth-child(1) {*/
+/*    margin-bottom: 40px;*/
+/*    left: 50px;*/
+/*    margin-left: 0;*/
+/*    margin-right: auto; !* 나머지 요소들을 오른쪽으로 밀어냄 *!*/
+/*}*/
 
-/*  2그룹 위치 조정    */
-.allOpponents > .opponent:nth-child(2) {
-    position: absolute;
-    margin-bottom: 40px;
-    right: 70px;
-    margin-left: auto;
-    margin-right: 0; /* 나머지 요소들을 오른쪽으로 밀어냄 */
-}
+/*!*  2그룹 위치 조정    *!*/
+/*.allOpponents > .opponent:nth-child(2) {*/
+/*    position: absolute;*/
+/*    margin-bottom: 40px;*/
+/*    right: 70px;*/
+/*    margin-left: auto;*/
+/*    margin-right: 0; !* 나머지 요소들을 오른쪽으로 밀어냄 *!*/
+/*}*/
 
 /* 플레이어 위치 조정 */
 .player {
@@ -95,7 +129,6 @@ body {
 
 .betting-area {
     bottom: 100px;
-    position: absolute;
     display: flex;
     justify-content: center;
     margin-top: 20px;
@@ -117,7 +150,6 @@ button:hover {
 }
 
 .my-cards {
-    position: absolute;
     left: 500px;
     bottom: 200px;
     display: flex;
@@ -136,12 +168,88 @@ p {
     font-size: 20px;
 }
 
-.hidden {
-    position: absolute;
-    top: 100px;
-    background: #333333;
-    border: 10px solid #cccccc;
+/*.hidden{*/
+/*    position: absolute;*/
+/*    top: 100px;*/
+/*    background: #333333;*/
+/*    border: 10px solid  #cccccc;*/
+/*}*/
+
+#rules-modal {
+    color: black;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80vw; /* 가로로 넓게 확장 */
+    height: 80vh; /* 높이를 자동으로 조절 */
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* 스크롤 제거 */
+    align-items: center;
+    text-align: center;
+    background-image: url("img/seotda_background.png");
 }
+
+.rules_txt strong {
+    font-size: 15px;
+}
+
+.rules-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* 칸 자동 배분 */
+    gap: 15px; /* 항목 사이 간격 */
+    align-items: start;
+    justify-items: start; /* 왼쪽 정렬 */
+    width: 100%;
+    height: 100%;
+    overflow-x: auto;
+    padding: 10px;
+}
+
+.rules {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: left;
+    background-color: rgba(255, 255, 255, 0.9);
+    padding: 10px;
+    width: auto;
+    gap: 10px;
+    border-radius: 8px;
+}
+
+.rules img {
+    width: 30px;
+    height: auto;
+    margin-bottom: 10px;
+}
+
+.rules_txt {
+    text-align: center;
+    color: black;
+    font-size: 10px;
+}
+
+#rules-modal button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+}
+
+#rules-modal button:hover {
+    background-color: #0056b3;
+}
+
 
 .setting {
     display: none;
@@ -153,29 +261,36 @@ p {
 }
 
 .allOpponents {
-    display: flex;
+    gap: 2rem; /* 상대적인 간격 */
+    padding: 2rem;
+    max-width: 80vw;
+    margin: 0 auto;
     justify-content: center;
-    gap: 50px;
-    flex-wrap: wrap;
-    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3개씩 배치 */
+    /* 가로 정렬 */
+    align-items: center; /* 세로 정렬 */
 }
 
-.opponent {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    width: 120px;
-}
+
+/*.opponent {*/
+/*    display: flex;*/
+/*    flex-direction: column;*/
+/*    align-items: center;*/
+/*    width: 120px;*/
+/*}*/
 
 .player {
     text-align: center;
     margin-bottom: 10px;
+    max-width: 30vw;
 }
 
 .card {
-    width: 80px;
-    height: 120px;
-    margin: 5px;
+    width: 5vw; /* 상대적인 크기 */
+    max-width: 80px;
+    height: auto;
+    margin: 0.5rem;
 }
 
 #game-result {
@@ -194,6 +309,17 @@ p {
     display: none;
 }
 
-.muteButton{
+.muteButton {
     width: 62px;
 }
+
+.my-area {
+    display: flex; /* 또는 grid 가능 */
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 가운데 정렬 */
+    justify-content: center;
+    gap: 10px; /* 요소 간 간격 */
+    padding: 20px;
+
+}
+
