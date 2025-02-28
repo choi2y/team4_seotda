@@ -1,4 +1,4 @@
-/* 폰트 설정 */
+/* 전체 페이지 스타일 */
 @font-face {
     font-family: 'ChosunGs';
     src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGs.woff') format('woff');
@@ -6,9 +6,8 @@
     font-style: normal;
 }
 
-/* 전체 페이지 스타일 */
 body {
-    font-family: 'ChosunGs', 'Noto Sans KR', sans-serif;
+    font-family: 'ChosunGs', sans-serif;
     background-image: url("img/seotda_background.png");
     color: #fff;
     text-align: center;
@@ -21,20 +20,18 @@ h1 {
     font-weight: bold;
     margin-bottom: 30px;
     margin-top: 30px;
-    color: #FFD700; /* 골드 */
-    text-shadow: 3px 3px 10px rgba(255, 215, 0, 0.9);
+    color: black;
 }
 
-/* 컨테이너 스타일 */
+/* 라벨 & 선택된 값 컨테이너 */
 .container {
     display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 20px;
-    border-bottom: 1px solid black;
+    align-items: center; /* 수직 가운데 정렬 */
+    gap: 20px; /* 요소 간 간격 */
+    border-bottom: black solid 1px;
     width: 600px;
-    padding: 10px 0;
-    margin: 0 auto;
+    padding: 10px 0; /* 내부 여백 추가 */
+    margin: 0 auto; /* 가운데 정렬 */
 }
 
 /* 라벨 스타일 */
@@ -45,12 +42,11 @@ label {
     font-size: 20px;
     font-weight: bold;
     padding: 10px 15px;
-    border: 3px solid #FFD700;
     border-radius: 10px;
     background: linear-gradient(145deg, #3A0000, #910000);
     color: #fff;
-    height: 50px;
-    min-width: 120px;
+    height: 50px; /* 높이 고정 */
+    min-width: 120px; /* 최소 너비 설정 */
     text-align: center;
     opacity: 0.7;
 }
@@ -66,9 +62,9 @@ span {
     padding: 10px 15px;
     background: rgba(255, 215, 0, 0.3);
     border-radius: 8px;
-    height: 50px;
-    flex-grow: 1;
-    min-width: 200px;
+    height: 50px; /* label과 동일한 높이 설정 */
+    flex-grow: 1; /* 남은 공간 차지 */
+    min-width: 200px; /* 최소 너비 설정 */
     text-align: center;
 }
 
@@ -78,7 +74,6 @@ button {
     font-weight: bold;
     padding: 12px 24px;
     border-radius: 10px;
-    border: 3px solid #FFD700;
     background: linear-gradient(145deg, #3A0000, #910000);
     color: #fff;
     cursor: pointer;
@@ -93,8 +88,8 @@ button:hover {
     box-shadow: 0 0 20px rgba(255, 215, 0, 0.9);
 }
 
-/* 선택된 버튼 강조 */
-button.selected {
+/* 선택된 버튼 스타일 */
+button.selected{
     background: #FFD700;
     color: #7A0000;
     font-weight: bold;
@@ -118,9 +113,27 @@ button.selected {
     font-size: 30px;
 }
 
-.start-button:hover {
+.game-start-btn:hover {
     background: #7A0000;
     color: #FFD700;
     box-shadow: 0 0 25px rgba(255, 215, 0, 1);
 }
 
+/* 게임 시작 버튼 - 화면 하단 고정 */
+/*.start-button {*/
+/*    font-size: 24px;*/
+/*    padding: 18px 36px;*/
+/*    background: linear-gradient(145deg, #FFD700, #D4A100); !* 금색 버튼 *!*/
+/*    color: #7A0000; !* 한게임 붉은색 *!*/
+/*    border: 3px solid #FFD700;*/
+/*    font-weight: bold;*/
+
+/*    position: fixed;*/
+/*    bottom: 20px;*/
+/*    left: 50%;*/
+/*    transform: translateX(-50%);*/
+/*    width: 220px;*/
+/*    text-align: center;*/
+/*    border-radius: 12px;*/
+/*    box-shadow: 0 0 20px rgba(255, 215, 0, 0.8);*/
+/*}*/
