@@ -11,6 +11,13 @@
     font-style: normal;
 }
 
+@font-face {
+    font-family: 'ChosunGs';
+    src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_20-04@1.0/ChosunGs.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+}
+
 html, body {
     margin: 0;
     padding: 0;
@@ -41,6 +48,7 @@ body {
     background-repeat: no-repeat; /* 이미지 반복 방지 */
     background-position: center top; /* 이미지 위치 조정 */
 }
+
 @keyframes flip-card {
     0% { transform: rotateY(0deg); }
     100% { transform: rotateY(180deg); }
@@ -129,7 +137,16 @@ body {
 }
 
 .my-area {
+    display: flex; /* 또는 grid 가능 */
+    flex-direction: column; /* 세로 정렬 */
+    align-items: center; /* 가운데 정렬 */
+    justify-content: center;
+    gap: 10px; /* 요소 간 간격 */
+    padding: 10px;
+    margin-top: 20px;
     margin-bottom: 20px;
+
+    width: 840px;
 }
 
 .betting-area {
@@ -158,9 +175,11 @@ button:hover {
     left: 500px;
     bottom: 200px;
     display: flex;
-    justify-content: center; /* 가로 중앙 정렬 */
+    justify-content:left; /* 가로 중앙 정렬 */
     align-items: center; /* 세로 중앙 정렬 */
     gap: 10px; /* 이미지 사이 간격 */
+    width: 820px;
+    height: 150px;
 
 }
 
@@ -264,12 +283,12 @@ p {
     gap: 2rem; /* 상대적인 간격 */
     padding: 2rem;
     max-width: 80vw;
-    margin: 0 auto;
     justify-content: center;
     display: grid;
     grid-template-columns: repeat(3, 1fr); /* 3개씩 배치 */
     /* 가로 정렬 */
     align-items: center; /* 세로 정렬 */
+    margin-top: 10%;
 }
 
 
@@ -294,10 +313,8 @@ p {
 }
 
 #game-result {
-    position: absolute;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%);
     background-color: rgba(0, 0, 0, 0.8);
     color: white;
     padding: 20px;
@@ -307,19 +324,18 @@ p {
     text-align: center;
     z-index: 1000;
     display: none;
+    float: right;
+    width:330px;
 }
 
 .muteButton {
     width: 62px;
 }
 
-.my-area {
-    display: flex; /* 또는 grid 가능 */
-    flex-direction: column; /* 세로 정렬 */
-    align-items: center; /* 가운데 정렬 */
-    justify-content: center;
-    gap: 10px; /* 요소 간 간격 */
-    padding: 20px;
-
+#game-result, #player-bet{
+    margin: 0 10px;
 }
 
+.bettingResult{
+    width: 100px;
+}

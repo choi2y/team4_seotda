@@ -22,7 +22,7 @@ let lastPlayerAction = "";
 let playerPoint = 50000000; // 플레이어의 초기 포인트
 let aiPoints = [];//ai포인트
 
-let bettingPoint = 10000; // 기본 배팅 금액
+let bettingPoint = 100000; // 기본 배팅 금액
 let totalBettingPoint = 0; // 총 배팅 금액
 let playerBettingPoint = 0; // 플레이어가 배팅한 금액
 
@@ -229,6 +229,9 @@ async function determineWinner() {
     // 포인트 업데이트 UI 반영
     document.getElementById("player-point").innerText = `포인트: ${formatMoney(playerPoint)}`;
     for (let i = 1; i < playerCount; i++) {
+        if (aiPoints[i - 1] <= 0) {
+            aiPoints[i - 1] = 50000000;
+        }
         document.getElementById(`ai-point-${i}`).innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`;
     }
 
@@ -275,10 +278,16 @@ function playerBet(action) {
             break;
         default:
             let customAmount = prompt("배팅할 금액을 입력하세요: (기본 단위: 만)", "100");
-            if (!isNaN(parseInt(customAmount)) && parseInt(customAmount)*10000 <= playerPoint) {
-                bettingAmount = parseInt(customAmount)*10000;
-            } else if(parseInt(customAmount) > playerPoint) {alert("보유 금액이 부족합니다. 다시 입력해주세요."); return;}
-            else{ alert("잘못된 입력입니다. 다시 입력해주세요"); return;}
+
+            if (!isNaN(parseInt(customAmount)) && parseInt(customAmount) * 10000 <= playerPoint) {
+                bettingAmount = parseInt(customAmount) * 10000;
+            } else if (parseInt(customAmount) > playerPoint) {
+                alert("보유 금액이 부족합니다. 다시 입력해주세요.");
+                return;
+            } else {
+                alert("잘못된 입력입니다. 다시 입력해주세요");
+                return;
+            }
     }
 
     playerPoint -= playerBettingPoint; // 🔥 포인트 차감
@@ -412,10 +421,10 @@ async function initDatabase() {
         // user_record 테이블 생성 (없을 경우)
         db.run(`
             CREATE TABLE IF NOT EXISTS user_record (
-                                                       user_id TEXT PRIMARY KEY,
-                                                       win_count INTEGER NOT NULL DEFAULT 0,
-                                                       lose_count INTEGER NOT NULL DEFAULT 0,
-                                                       FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+                user_id TEXT PRIMARY KEY,
+                win_count INTEGER NOT NULL DEFAULT 0,
+                lose_count INTEGER NOT NULL DEFAULT 0,
+                FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
             );
         `);
         console.log("✅ 새 데이터베이스가 생성되었습니다.");
@@ -521,6 +530,7 @@ function betting(action, isAI = false, aiIndex = null) {
 
 
     //  AI 배팅 상태 표시
+
     if (isAI && aiIndex !== null) {
         const aiJokbo = getJokbo(aiCards[aiIndex - 1]); // AI 족보 가져오기
         document.getElementById(`ai-bet-${aiIndex}`).innerHTML = `${action} <br> <strong>${aiJokbo}</strong>`; // AI 배팅 + 족보 표시
