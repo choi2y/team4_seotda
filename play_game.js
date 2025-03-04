@@ -1,14 +1,14 @@
 const cards = [
-    {num: 1, name: '소나무', img: 'img/11.jpg'}, {num: 1, name: '광', img: 'img/1.jpg'},
-    {num: 2, name: '휘파람새', img: 'img/2.jpg'}, {num: 2, name: '매화꽃', img: 'img/12.jpg'},
-    {num: 3, name: '광', img: 'img/3.jpg'}, {num: 3, name: '벗꽃', img: 'img/13.jpg'},
-    {num: 4, name: '두견새', img: 'img/4.jpg'}, {num: 4, name: '등나무 꽃', img: 'img/14.jpg'},
-    {num: 5, name: '다리', img: 'img/5.jpg'}, {num: 5, name: '창포꽃', img: 'img/15.jpg'},
-    {num: 6, name: '나비', img: 'img/6.jpg'}, {num: 6, name: '모란', img: 'img/16.jpg'},
-    {num: 7, name: '멧돼지', img: 'img/7.jpg'}, {num: 7, name: '싸리 꽃', img: 'img/17.jpg'},
-    {num: 8, name: '광', img: 'img/8.jpg'}, {num: 8, name: '기러기', img: 'img/18.jpg'},
-    {num: 9, name: '술잔', img: 'img/9.jpg'}, {num: 9, name: '국화', img: 'img/19.jpg'},
-    {num: 10, name: '사슴', img: 'img/10.jpg'}, {num: 10, name: '단풍', img: 'img/20.jpg'}
+    { num: 1, name: '소나무', img: 'img/11.jpg' }, { num: 1, name: '광', img: 'img/1.jpg' },
+    { num: 2, name: '휘파람새', img: 'img/2.jpg' }, { num: 2, name: '매화꽃', img: 'img/12.jpg' },
+    { num: 3, name: '광', img: 'img/3.jpg' }, { num: 3, name: '벗꽃', img: 'img/13.jpg' },
+    { num: 4, name: '두견새', img: 'img/4.jpg' }, { num: 4, name: '등나무 꽃', img: 'img/14.jpg' },
+    { num: 5, name: '다리', img: 'img/5.jpg' }, { num: 5, name: '창포꽃', img: 'img/15.jpg' },
+    { num: 6, name: '나비', img: 'img/6.jpg' }, { num: 6, name: '모란', img: 'img/16.jpg' },
+    { num: 7, name: '멧돼지', img: 'img/7.jpg' }, { num: 7, name: '싸리 꽃', img: 'img/17.jpg' },
+    { num: 8, name: '광', img: 'img/8.jpg' }, { num: 8, name: '기러기', img: 'img/18.jpg' },
+    { num: 9, name: '술잔', img: 'img/9.jpg' }, { num: 9, name: '국화', img: 'img/19.jpg' },
+    { num: 10, name: '사슴', img: 'img/10.jpg' }, { num: 10, name: '단풍', img: 'img/20.jpg' }
 ];
 // AI 난이도 설정 불러오기 (localStorage에서 값 가져오기)
 let aiDifficulty = localStorage.getItem("difficulty") || "easy"; // 기본값 "easy"
@@ -25,7 +25,6 @@ let aiPoints = [];//ai포인트
 let bettingPoint = 100000; // 기본 배팅 금액
 let totalBettingPoint = 0; // 총 배팅 금액
 let playerBettingPoint = 0; // 플레이어가 배팅한 금액
-
 
 function initializeDeck() {
     deck = [...cards];
@@ -55,6 +54,8 @@ function initializePoints() {
         }
     }
 }
+
+
 
 
 function createAIUI() {
@@ -245,6 +246,7 @@ async function determineWinner() {
 }
 
 
+
 function compareJokbo(jokboA, jokboB) {
     const order = [
         "38광땡", "18광땡", "13광땡",  // 광땡 최우선
@@ -260,22 +262,23 @@ function playerBet(action) {
     lastPlayerAction = action;
     alert(`플레이어가 '${action}'을 선택했습니다.`);
 
-    let bettingAmount = 0;
     switch (action) {
         case "다이":
-            bettingAmount = 0;
+            playerBettingPoint = 0;
             break;
         case "콜":
-            bettingAmount = bettingPoint;
+            playerBettingPoint = bettingPoint;
             break;
         case "따당":
-            bettingAmount = bettingPoint * 2;
+            playerBettingPoint = bettingPoint * 2;
+            bettingPoint = playerBettingPoint;
             break;
         case "올인":
-            bettingAmount = playerPoint;  // 플레이어가 가진 모든 돈을 배팅
+            playerBettingPoint = playerPoint;  // 플레이어가 가진 모든 돈을 배팅
             break;
         default:
             let customAmount = prompt("배팅할 금액을 입력하세요: (기본 단위: 만)", "100");
+
             if (!isNaN(parseInt(customAmount)) && parseInt(customAmount) * 10000 <= playerPoint) {
                 bettingAmount = parseInt(customAmount) * 10000;
             } else if (parseInt(customAmount) > playerPoint) {
@@ -287,12 +290,7 @@ function playerBet(action) {
             }
     }
 
-    if (bettingAmount > playerPoint) {
-        alert("💰 보유 금액이 부족합니다!");
-        return;
-    }
-
-    playerPoint -= bettingAmount; // 🔥 포인트 차감
+    playerPoint -= playerBettingPoint; // 🔥 포인트 차감
     updatePlayerPoint(); // 🔥 데이터베이스 업데이트
     document.getElementById("player-point").innerText = `포인트: ${playerPoint}`; // UI 반영
 
@@ -322,6 +320,7 @@ async function startGame() {
     document.getElementById("game-result").style.display = "none";
     document.getElementById("game-result").innerText = "";  // 이전 승패 결과 제거
 }
+
 
 
 //nav바 함수들
@@ -387,11 +386,12 @@ window.restartGame = function () {
 };
 
 
+
 function saveDatabase() {
     if (!db) return;
 
     const data = db.export();
-    const blob = new Blob([data], {type: "application/octet-stream"});
+    const blob = new Blob([data], { type: "application/octet-stream" });
     const reader = new FileReader();
 
     reader.onload = function () {
@@ -496,7 +496,6 @@ function logout() {
     localStorage.removeItem("loggedUser");
     window.location.href = "login.html";
 }
-
 window.logout = logout;
 
 //-----------------------------
@@ -517,12 +516,12 @@ function betting(action, isAI = false, aiIndex = null) {
             bettingAmount = bettingPoint * 2;
             break;
         case "올인":
-            bettingAmount = isAI ? 150000 : playerPoint; // AI는 15만원, 플레이어는 전부
+            bettingAmount = isAI ? 3000000 : playerPoint; // AI는 300만원, 플레이어는 전부
             break;
     }
 
     if (!isAI) {
-        playerBettingPoint = bettingAmount;
+        bettingAmount = playerBettingPoint;
     } else {
         // AI 배팅 금액을 반영
         aiPoints[aiIndex - 1] -= bettingAmount;
@@ -530,15 +529,22 @@ function betting(action, isAI = false, aiIndex = null) {
     totalBettingPoint += bettingAmount;
 
 
-    // 💡 AI 배팅 상태 표시
+    //  AI 배팅 상태 표시
+
     if (isAI && aiIndex !== null) {
-        document.getElementById(`ai-bet-${aiIndex}`).innerText = action; // AI 배팅 표시
+        const aiJokbo = getJokbo(aiCards[aiIndex - 1]); // AI 족보 가져오기
+        document.getElementById(`ai-bet-${aiIndex}`).innerHTML = `${action} <br> <strong>${aiJokbo}</strong>`; // AI 배팅 + 족보 표시
+
         // AI 포인트 UI 업데이트
         document.getElementById(`ai-point-${aiIndex}`).innerText = `포인트: ${formatMoney(aiPoints[aiIndex - 1])}`;
     } else {
-        document.getElementById("player-bet").innerText = action; // 플레이어 배팅 표시
+        const playerJokbo = getJokbo(playerCards); // 플레이어 족보 가져오기
+        document.getElementById("player-bet").innerHTML = `${action} <br> <strong>${playerJokbo}</strong>`; // 플레이어 배팅 + 족보 표시
     }
 }
+
+
+
 
 
 // AI 턴 진행: AI가 배팅을 하고 화면에 반영
@@ -586,7 +592,6 @@ function mediumAIBetting(aiCards) {
         return "콜";
     }
 }
-
 //배팅머니 결과
 async function initPlayerPoint() {
     const storedUser = localStorage.getItem("loggedUser");
