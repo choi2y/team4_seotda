@@ -64,7 +64,7 @@ async function loadDatabase(SQL) {
                     password TEXT NOT NULL,
                     game_money INTEGER NOT NULL DEFAULT 50000000
                 );
-                
+
                 CREATE TABLE IF NOT EXISTS user_record (
                     user_id TEXT PRIMARY KEY,
                     win_count INTEGER NOT NULL DEFAULT 0,
