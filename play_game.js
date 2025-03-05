@@ -386,8 +386,10 @@ function goToMyPage() {
     window.location.href = "mypage.html";  // 마이페이지로 이동
 }
 
-
-document.addEventListener("DOMContentLoaded", startGame);
+// 처음 페이지 로딩 시 규칙창만 표시
+document.addEventListener("DOMContentLoaded", function (){
+    showRules();
+});
 
 //게임 승패 기록 함수
 async function updateUserRecord(user_id, isWin) {

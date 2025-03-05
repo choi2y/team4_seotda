@@ -53,7 +53,7 @@ label {
 
 /* 선택된 값 스타일 */
 span {
-    color: gray;
+    color: black;
     display: flex;
     align-items: center;
     justify-content: center;
