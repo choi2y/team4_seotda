@@ -84,12 +84,16 @@ function dealCards() {
     }
 }
 
-function updateUI() {
-    document.getElementById("my-card-1").src = playerCards[0].img;
-    document.getElementById("my-card-2").src = playerCards[1].img;
-
+function updateUI(initial=false) {
+    if(initial){
+        document.getElementById("my-card-1").src="img/0.jpg";
+        document.getElementById("my-card-2").src="img/0.jpg";
+    }else {
+        document.getElementById("my-card-1").src = playerCards[0].img;
+        document.getElementById("my-card-2").src = playerCards[1].img;
+    }
     for (let i = 1; i < playerCount; i++) {
-        document.getElementById(`ai-card-${i}-1`).src = "img/0.jpg"; // 기본 가려진 카드
+        document.getElementById(`ai-card-${i}-1`).src = "img/0.jpg";
         document.getElementById(`ai-card-${i}-2`).src = "img/0.jpg";
     }
 }
@@ -257,6 +261,10 @@ function compareJokbo(jokboA, jokboB) {
     return order.indexOf(jokboB) - order.indexOf(jokboA);
 }
 
+function revealFirstCards(){
+    document.getElementById("my-card-1").src=playerCards[0].img;
+    alert("첫 번째 배팅을 진행하세요.");
+}
 
 function playerBet(action) {
     lastPlayerAction = action;
@@ -265,7 +273,9 @@ function playerBet(action) {
     switch (action) {
         case "다이":
             playerBettingPoint = 0;
-            break;
+            revealedSecondCard = true;
+            aiTurn();
+            return;
         case "콜":
             playerBettingPoint = bettingPoint;
             break;
@@ -293,32 +303,67 @@ function playerBet(action) {
     playerPoint -= playerBettingPoint; // 🔥 포인트 차감
     updatePlayerPoint(); // 🔥 데이터베이스 업데이트
     document.getElementById("player-point").innerText = `포인트: ${playerPoint}`; // UI 반영
-
     betting(action, false); // 플레이어 배팅 결과 UI에 반영
-    aiTurn();
+
+    if(!revealedSecondCard){
+        setTimeout(()=>{
+            revealSecondCards();
+        },1000);
+    }else{
+        aiTurn();
+    }
+}
+
+let revealedSecondCard = false;
+
+function revealSecondCards() {
+    document.getElementById("my-card-2").src=playerCards[1].img;
+    revealedSecondCard=true;
+    alert("두 번째 배팅을 진행하세요.");
 }
 
 function aiTurn() {
     setTimeout(() => {
         alert("AI가 배팅을 진행합니다.");
-        determineWinner();
+        for(let i=1; i < playerCount; i++) {
+            let aiAction = aiBettingType(aiDifficulty,aiCards[i-1]);
+            betting(aiAction,true,i);
+        }
+        setTimeout(()=>{
+            revealAICards();
+        },1000);
     }, 1000);
+}
+
+function revealAICards() {
+    for(let i=1; i < playerCount; i++) {
+        document.getElementById(`ai-card-${i}-1`).src=aiCards[i-1][0].img;
+        document.getElementById(`ai-card-${i}-2`).src=aiCards[i-1][1].img;
+    }
+    determineWinner();
 }
 
 async function startGame() {
     createAIUI(); // AI UI 생성
     initializeDeck(); // 카드 덱 초기화
     dealCards(); // 카드 분배
-    updateUI(); // UI 업데이트
+    updateUI(true); // UI 업데이트 - 초기상태 - 내 카드 뒷면 유지
 
     await initPlayerPoint(); // 🔥 게임 시작 시 플레이어 포인트 불러오기
 
     // 포인트 초기화
     initializePoints(); // 🔥 플레이어와 AI 포인트 초기화
 
+    revealedSecondCard = false;
+
     // 게임 시작 시 결과창 강제 숨김 (초기화)
     document.getElementById("game-result").style.display = "none";
     document.getElementById("game-result").innerText = "";  // 이전 승패 결과 제거
+
+    // 첫 번째 카드 공개 후 첫 배팅
+    setTimeout(()=>{
+        revealFirstCards();
+    },1000);
 }
 
 
@@ -421,10 +466,10 @@ async function initDatabase() {
         // user_record 테이블 생성 (없을 경우)
         db.run(`
             CREATE TABLE IF NOT EXISTS user_record (
-                user_id TEXT PRIMARY KEY,
-                win_count INTEGER NOT NULL DEFAULT 0,
-                lose_count INTEGER NOT NULL DEFAULT 0,
-                FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
+                                                       user_id TEXT PRIMARY KEY,
+                                                       win_count INTEGER NOT NULL DEFAULT 0,
+                                                       lose_count INTEGER NOT NULL DEFAULT 0,
+                                                       FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
             );
         `);
         console.log("✅ 새 데이터베이스가 생성되었습니다.");
@@ -543,20 +588,6 @@ function betting(action, isAI = false, aiIndex = null) {
     }
 }
 
-
-
-
-
-// AI 턴 진행: AI가 배팅을 하고 화면에 반영
-function aiTurn() {
-    setTimeout(() => {
-        for (let i = 1; i < playerCount; i++) {
-            let aiAction = aiBettingType(aiDifficulty, aiCards[i - 1]); // AI 배팅 결정
-            betting(aiAction, true, i); // AI 배팅 실행 및 UI 반영
-        }
-        determineWinner(); // 승자 결정
-    }, 1000);
-}
 
 // AI 배팅 타입 설정
 function aiBettingType(aiDifficulty, aiCards) {
