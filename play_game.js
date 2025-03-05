@@ -343,6 +343,32 @@ function revealAICards() {
     determineWinner();
 }
 
+// 키보드 입력 이벤트 추가
+document.addEventListener("keydown", function(event) {
+    switch (event.key) {
+        case "1":
+            playerBet("다이");
+            break;
+        case "2":
+            playerBet("콜");
+            break;
+        case "3":
+            playerBet("따당");
+            break;
+        case "4":
+            playerBet("올인");
+            break;
+        case "5":
+            playerBet("직접입력");
+            break;
+        case "Escape":
+            closeRules();
+            closeSettings();
+            break;
+    }
+});
+
+
 async function startGame() {
     createAIUI(); // AI UI 생성
     initializeDeck(); // 카드 덱 초기화
