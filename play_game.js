@@ -17,13 +17,14 @@ let deck = [];
 let playerCards = [];
 let aiCards = [];
 
+let lastPlayerAction = "";
+
 let playerPoint = 50000000; // 플레이어의 초기 포인트
 let aiPoints = [];//ai포인트
 
-let bettingPoint = 10000; // 기본 배팅 금액
+let bettingPoint = 100000; // 기본 배팅 금액
 let totalBettingPoint = 0; // 총 배팅 금액
 let playerBettingPoint = 0; // 플레이어가 배팅한 금액
-
 
 function initializeDeck() {
     deck = [...cards];
@@ -31,21 +32,26 @@ function initializeDeck() {
 }
 
 function initializePoints() {
-    // 플레이어 포인트 불러오기
-    initPlayerPoint();
+    initPlayerPoint(); // 플레이어 포인트 불러오기
 
     // AI 포인트 불러오기 (localStorage에서 값 불러오기)
     const savedAIPoints = localStorage.getItem("aiPoints");
     if (savedAIPoints) {
-        aiPoints = JSON.parse(savedAIPoints);  // 저장된 AI 포인트 배열 불러오기
+        aiPoints = JSON.parse(savedAIPoints);
     } else {
-        aiPoints = Array(playerCount - 1).fill(50000000); // 기본값으로 5천만 원
+        aiPoints = Array(playerCount - 1).fill(50000000);
     }
 
-    // UI 업데이트
+    createAIUI(); // AI UI를 먼저 생성한 후 포인트 업데이트
+
     document.getElementById("player-point").innerText = `포인트: ${formatMoney(playerPoint)}`;
     for (let i = 1; i < playerCount; i++) {
-        document.getElementById(`ai-point-${i}`).innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`;  // AI 포인트 표시
+        const aiPointElement = document.getElementById(`ai-point-${i}`);
+        if (aiPointElement) {
+            aiPointElement.innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`;
+        } else {
+            console.warn(`⚠️ AI ${i}의 포인트 UI를 찾을 수 없습니다.`);
+        }
     }
 }
 
@@ -59,9 +65,9 @@ function createAIUI() {
     for (let i = 1; i < playerCount; i++) {
         const aiPlayer = document.createElement("div");
         aiPlayer.classList.add("player");
-        aiPlayer.innerHTML = `
-            <p>플레이어 ${i}</p>
-            <p id="ai-point-${i}" class="ai-money">포인트: ${formatMoney(aiPoints[i - 1])}</p> <!-- AI 포인트 표시 -->
+        aiPlayer.innerHTML = `<div class="forP">
+            <p class = "AINumber">플레이어 ${i}</p>
+            <p id="ai-point-${i}" class="ai-money">포인트: ${formatMoney(aiPoints[i - 1])}</p> </div>
             <img class="card back" id="ai-card-${i}-1" src="img/0.jpg">
             <img class="card back" id="ai-card-${i}-2" src="img/0.jpg">
             <p class="bettingResult" id="ai-bet-${i}">대기 중...</p>
@@ -69,7 +75,6 @@ function createAIUI() {
         opponentsContainer.appendChild(aiPlayer);
     }
 }
-
 
 function dealCards() {
     playerCards = [deck.pop(), deck.pop()];
@@ -139,26 +144,54 @@ function getJokbo(cards) {
 }
 
 
-function determineWinner() {
+async function determineWinner() {
     let playerJokbo = getJokbo(playerCards);
     let aiJokbos = aiCards.map(getJokbo);
+    let allHands = [];
+    if (lastPlayerAction !== "다이") {
+        allHands = [{name: "플레이어", jokbo: playerJokbo}];
+    }
+    console.log(playerJokbo); // 플레이어 족보 확인
 
-    let allHands = [{ name: "플레이어", jokbo: playerJokbo }];
     aiJokbos.forEach((jokbo, index) => {
-        allHands.push({ name: `AI ${index + 1}`, jokbo });
+        allHands.push({name: `AI ${index + 1}`, jokbo});
     });
 
     let rankedHands = allHands.sort((a, b) => compareJokbo(b.jokbo, a.jokbo));
-
-    let topRankJokbo = rankedHands[0].jokbo; // 가장 높은 족보
-    let winners = rankedHands.filter(hand => hand.jokbo === topRankJokbo); // 같은 족보를 가진 플레이어들
+    let topRankJokbo = rankedHands[0].jokbo;
+    let winners = rankedHands.filter(hand => hand.jokbo === topRankJokbo);
 
     let isWin = false;
+    let resultMessage = "";
+
+    // 로그인한 사용자 정보 가져오기
+    let user_id = sessionStorage.getItem("user_id");
+    let winCount = 0, loseCount = 0;
+
+    try {
+        if (typeof db === "undefined" || !db) {
+            console.warn("⚠ 데이터베이스가 초기화되지 않음. 초기화 실행...");
+            await initDatabase();
+        }
+
+        const query = `SELECT win_count, lose_count
+                       FROM user_record
+                       WHERE user_id = ?;`;
+        const stmt = db.prepare(query);
+        stmt.bind([user_id]);
+
+        if (stmt.step()) {
+            const record = stmt.getAsObject();
+            winCount = record.win_count;
+            loseCount = record.lose_count;
+        }
+        stmt.free();
+    } catch (error) {
+        console.error(" 전적 조회 중 오류 발생:", error);
+    }
 
     if (winners.length > 1) {
-        document.getElementById("game-result").innerText = `무승부! (${topRankJokbo})`;
-
-        // 🛠 무승부일 경우 배팅 금액 반환
+        resultMessage = ` 무승부! (${topRankJokbo}) 배팅 금액 반환`;
         playerPoint += playerBettingPoint;
         document.getElementById("player-point").innerText = `포인트: ${formatMoney(playerPoint)}`;
 
@@ -166,22 +199,25 @@ function determineWinner() {
             aiPoints[i - 1] += bettingPoint;
             document.getElementById(`ai-point-${i}`).innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`;
         }
-
-        console.log("⚖ 무승부! 배팅 금액이 반환되었습니다.");
+        console.log(" 무승부! 배팅 금액 반환");
     } else {
         const winner = winners[0];
-        document.getElementById("game-result").innerText = `승자: ${winner.name} (${topRankJokbo})`;
+        document.getElementById("game-result").innerText = ` 승자: ${winner.name} (${topRankJokbo})`;
 
         if (winner.name === "플레이어") {
             isWin = true;
-            playerPoint += totalBettingPoint; // 플레이어 승리 시 배팅 금액 획득
+            playerPoint += totalBettingPoint;
+            winCount += 1;
+            resultMessage = `승리하셨습니다.\n 승자:${winner.name} (${topRankJokbo}) \n(전적: ${winCount}승 ${loseCount}패)`;
         } else {
-            // AI 승리 시 AI 포인트 업데이트
             const aiIndex = parseInt(winner.name.split(" ")[1]) - 1;
-            aiPoints[aiIndex] += totalBettingPoint; // 해당 AI의 포인트 업데이트
+            aiPoints[aiIndex] += totalBettingPoint;
+            loseCount += 1;
+            resultMessage = `패배하셨습니다.\n 승자:${winner.name} (${topRankJokbo}) \n(전적: ${winCount}승 ${loseCount}패)`;
         }
     }
 
+    document.getElementById("game-result").innerText = resultMessage;
     document.getElementById("game-result").style.display = "block";
 
     // AI들의 패 공개
@@ -193,15 +229,21 @@ function determineWinner() {
     // 포인트 업데이트 UI 반영
     document.getElementById("player-point").innerText = `포인트: ${formatMoney(playerPoint)}`;
     for (let i = 1; i < playerCount; i++) {
-        document.getElementById(`ai-point-${i}`).innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`; // UI 업데이트
+        if (aiPoints[i - 1] <= 0) {
+            aiPoints[i - 1] = 50000000;
+        }
+        document.getElementById(`ai-point-${i}`).innerText = `포인트: ${formatMoney(aiPoints[i - 1])}`;
     }
 
     // AI 포인트 저장
-    saveAIPoints();  // AI 포인트를 localStorage에 저장
+    saveAIPoints();
+    updatePlayerPoint();
+
+    // ✅ 승패 기록 업데이트 실행
+    console.log("✅ 승패 기록 업데이트 실행");
+    updateUserRecord(user_id, isWin);
+
 }
-
-
-
 
 
 
@@ -216,37 +258,45 @@ function compareJokbo(jokboA, jokboB) {
 }
 
 
-
 function playerBet(action) {
+    lastPlayerAction = action;
     alert(`플레이어가 '${action}'을 선택했습니다.`);
 
-    let bettingAmount = 0;
     switch (action) {
+        case "다이":
+            playerBettingPoint = 0;
+            break;
         case "콜":
-            bettingAmount = bettingPoint;
+            playerBettingPoint = bettingPoint;
             break;
         case "따당":
-            bettingAmount = bettingPoint * 2;
+            playerBettingPoint = bettingPoint * 2;
+            bettingPoint = playerBettingPoint;
             break;
         case "올인":
-            bettingAmount = playerPoint;  // 플레이어가 가진 모든 돈을 배팅
+            playerBettingPoint = playerPoint;  // 플레이어가 가진 모든 돈을 배팅
             break;
+        default:
+            let customAmount = prompt("배팅할 금액을 입력하세요: (기본 단위: 만)", "100");
+
+            if (!isNaN(parseInt(customAmount)) && parseInt(customAmount) * 10000 <= playerPoint) {
+                bettingAmount = parseInt(customAmount) * 10000;
+            } else if (parseInt(customAmount) > playerPoint) {
+                alert("보유 금액이 부족합니다. 다시 입력해주세요.");
+                return;
+            } else {
+                alert("잘못된 입력입니다. 다시 입력해주세요");
+                return;
+            }
     }
 
-    if (bettingAmount > playerPoint) {
-        alert("💰 보유 금액이 부족합니다!");
-        return;
-    }
-
-    playerPoint -= bettingAmount; // 🔥 포인트 차감
+    playerPoint -= playerBettingPoint; // 🔥 포인트 차감
     updatePlayerPoint(); // 🔥 데이터베이스 업데이트
     document.getElementById("player-point").innerText = `포인트: ${playerPoint}`; // UI 반영
 
     betting(action, false); // 플레이어 배팅 결과 UI에 반영
     aiTurn();
 }
-
-
 
 function aiTurn() {
     setTimeout(() => {
@@ -380,6 +430,7 @@ async function initDatabase() {
         console.log("✅ 새 데이터베이스가 생성되었습니다.");
     }
 }
+
 // -------------------------------------------------------------------
 document.addEventListener("DOMContentLoaded", function () {
     const music = document.getElementById("BGM001");
@@ -465,25 +516,30 @@ function betting(action, isAI = false, aiIndex = null) {
             bettingAmount = bettingPoint * 2;
             break;
         case "올인":
-            bettingAmount = isAI ? 150000 : playerPoint; // AI는 15만원, 플레이어는 전부
+            bettingAmount = isAI ? 3000000 : playerPoint; // AI는 300만원, 플레이어는 전부
             break;
     }
 
     if (!isAI) {
-        playerBettingPoint = bettingAmount;
+        bettingAmount = playerBettingPoint;
     } else {
         // AI 배팅 금액을 반영
         aiPoints[aiIndex - 1] -= bettingAmount;
     }
     totalBettingPoint += bettingAmount;
 
-    // 💡 AI 배팅 상태 표시
+
+    //  AI 배팅 상태 표시
+
     if (isAI && aiIndex !== null) {
-        document.getElementById(`ai-bet-${aiIndex}`).innerText = action; // AI 배팅 표시
+        const aiJokbo = getJokbo(aiCards[aiIndex - 1]); // AI 족보 가져오기
+        document.getElementById(`ai-bet-${aiIndex}`).innerHTML = `${action} <br> <strong>${aiJokbo}</strong>`; // AI 배팅 + 족보 표시
+
         // AI 포인트 UI 업데이트
         document.getElementById(`ai-point-${aiIndex}`).innerText = `포인트: ${formatMoney(aiPoints[aiIndex - 1])}`;
     } else {
-        document.getElementById("player-bet").innerText = action; // 플레이어 배팅 표시
+        const playerJokbo = getJokbo(playerCards); // 플레이어 족보 가져오기
+        document.getElementById("player-bet").innerHTML = `${action} <br> <strong>${playerJokbo}</strong>`; // 플레이어 배팅 + 족보 표시
     }
 }
 
@@ -596,7 +652,9 @@ async function updatePlayerPoint() {
         stmt.free();
 
         console.log(`✅ ${userId}의 포인트 업데이트 완료: ${playerPoint}`);
-        saveDatabase(); // DB 변경 사항 저장
+
+        // ✅ 데이터베이스 변경 사항 저장
+        saveDatabase();
 
         // ✅ 로컬스토리지의 플레이어 정보도 업데이트
         user.game_money = playerPoint;
@@ -608,16 +666,8 @@ async function updatePlayerPoint() {
 }
 
 function formatMoney(value) {
-    if (value >= 100000000) {
-        return (value / 100000000) + "억 원";
-    } else if (value >= 10000000) {
-        return (value / 10000000) + "천만 원";
-    } else if (value >= 1000000) {
-        return (value / 1000000) + "백만 원";
-    } else if (value >= 10000) {
+    if (value >= 10000) {
         return (value / 10000) + "만 원";
-    } else if (value >= 1000) {
-        return (value / 1000) + "천 원";
     }
     return value + " 원";
 }
@@ -625,9 +675,3 @@ function formatMoney(value) {
 function saveAIPoints() {
     localStorage.setItem("aiPoints", JSON.stringify(aiPoints));  // 여러 AI 포인트를 배열로 저장
 }
-
-
-
-
-
-
