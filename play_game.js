@@ -368,12 +368,6 @@ async function startGame() {
 
 
 
-//nav바 함수들
-function restartGame() {
-    localStorage.clear();
-    location.reload();
-}
-
 function showRules() {
     document.getElementById("rules-modal").style.display = "flex";
 }
@@ -389,6 +383,7 @@ function goToMyPage() {
 // 처음 페이지 로딩 시 규칙창만 표시
 document.addEventListener("DOMContentLoaded", function (){
     showRules();
+    initPlayerPoint();
 });
 
 //게임 승패 기록 함수
