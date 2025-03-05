@@ -38,7 +38,8 @@ html, body {
 /*}*/
 body {
     background-color: #4d0d0d; /* 섯다 느낌의 배경색 */
-    color: #f5d76e;
+    color: black;
+    font-size: 18px;
     font-family: 'ChosunGs', sans-serif; /* 입력 필드 폰트 적용 */
     text-align: center;
     background-image: url("img/game_background.png");
